@@ -5,11 +5,11 @@ import matplotlib.pyplot as plt
 ## Parameters
 v_w = 10 #np.linspace(5,20,50)
 CL_out = 1.0 #np.linspace(0.6,1.5,50)
-A_proj = 21.57 #np.linspace(15,35,50) #19.8 #
+A_proj = 20.57 #np.linspace(15,35,50) #19.8 #
 
 rho = 1.18
-g_out = 0.29292929
-g_in = 2.0
+g_out = 0.272727
+g_in = 1.6060606
 lc = 250
 CD_out = 0.2
 CL_in = 0.14
@@ -39,8 +39,8 @@ P_out_e = P_out * eff_out
 P_in = T_in*g_in*v_w
 P_in_e = P_in / eff_in
 
-P_avg_mech = P_out*5/6 - P_in*1/6 
-P_avg_elec = P_out_e*5/6 - P_in_e*1/6 
+P_avg_mech = P_out*(g_in)/(g_in + g_out) - P_in*g_out/(g_in + g_out)
+P_avg_elec = P_out_e*(g_in)/(g_in + g_out) - P_in_e*g_out/(g_in + g_out) 
 P_M_G = P_out*0.77*0.85*0.95
 
 ## Energy Calculations ##
@@ -65,7 +65,7 @@ print('The mechanical power (W) reel out and in are: ',P_out,P_in)
 print('The electrical power (W) reel out and in are: ',P_out_e, P_in_e)
 print('The total electrical energy (J) reel out and in and the in/out ratio is: ', E_out_e, E_in_e, R_E)
 print('The energy stored in supercap per cycle (Wh): ', E_supcap_pc)
-print('The average mechanical power (W) and electrical power is: ',P_avg_m, P_avg_e)
+print('The average mechanical power (W) and electrical power is: ',P_avg_m, P_avg_e, P_avg_elec)
 print('Motor generator power (W): ', P_M_G)
 
 ## Plots ##
