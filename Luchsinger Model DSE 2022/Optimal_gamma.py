@@ -63,6 +63,7 @@ def calculate_nominal_powers():
     ## Sanity check ##
     P_avg_mech = P_out*(gamma_in)/(gamma_in + gamma_out) - P_in*gamma_out/(gamma_in + gamma_out)
     P_avg_elec = P_out_e*(gamma_in)/(gamma_in + gamma_out) - P_in_e*gamma_out/(gamma_in + gamma_out) 
+    return T_in_n,T_out_n
 
 def calculated_updated_projected_area():
     
