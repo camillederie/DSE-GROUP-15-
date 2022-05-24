@@ -37,7 +37,7 @@ def calculate_opt_gamma_nominal():
     print(max_power_m,max_power_e)
     return gamma_out, gamma_in
 
-#gamma_out, gamma_in = calculate_opt_gamma_nominal()
+
 
 ### This function calculates the traction forces for nominal flight conditions ###
 
@@ -47,11 +47,12 @@ def calculate_nominal_tractionF():
     T_out_n = 0.5*rho*v_w_n**2*A_proj*(1-gamma_out)**2*F_out
     T_in_n = 0.5*rho*v_w_n**2*A_proj*(1+gamma_in)**2*F_in
 
-    return T_out_n, T_in_n, gamma_out, gamma_in
+    return T_out_n, T_in_n
 
 def calculate_nominal_powers():
 
-    T_out_n, T_in_n, gamma_out, gamma_in  = calculate_nominal_tractionF()
+    T_out_n, T_in_n  = calculate_nominal_tractionF()
+    gamma_out, gamma_in = calculate_opt_gamma_nominal()
 
     P_out = T_out_n*gamma_out*v_w_n
     P_out_e = P_out * eff_out
@@ -63,9 +64,16 @@ def calculate_nominal_powers():
     P_avg_mech = P_out*(gamma_in)/(gamma_in + gamma_out) - P_in*gamma_out/(gamma_in + gamma_out)
     P_avg_elec = P_out_e*(gamma_in)/(gamma_in + gamma_out) - P_in_e*gamma_out/(gamma_in + gamma_out) 
 
-# def iterate_projected_area():
-#     while A_proj
+def calculated_updated_projected_area():
+    
+    gamma_out, gamma_in = calculate_opt_gamma_nominal()
+    A_proj = P_avg_e_n/P_w/((eff_out*F_out*(1-gamma_out)**2-(F_in*(1+gamma_in)**2)/eff_in)*((gamma_out*gamma_in)/(gamma_out+gamma_in)))
+    print(A_proj)
+
 
 calculate_nominal_powers()
+A_proj = calculated_updated_projected_area()
+#calculate_opt_gamma_nominal()
+
        
         
