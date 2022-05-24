@@ -5,6 +5,7 @@ from Optimal_gamma import *
 
 #assume Power and Tether Limit are reached at the same time
 #get gamma data from Optimal gamme for v_w=<v_n
+##test
 
 gamma_out_n,gamma_in_n = calculate_opt_gamma_nominal() #nominal reel out from optimal_gamma.py
 
