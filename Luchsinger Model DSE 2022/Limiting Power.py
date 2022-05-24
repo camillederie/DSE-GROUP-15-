@@ -35,7 +35,7 @@ for i in v_w:
     max_f_c = np.amax(f_c_mu)
     a = np.where(f_c_mu == max_f_c)
     gamma_in_max_f_c[ci] = gamma_in[a]
-    gamma_out_max_f_c[ci] = gamma_out[ci]/mu
+    gamma_out_max_f_c[ci] = gamma_out_n/mu
     ci +=1
     cj = 0
 print (gamma_in_max_f_c,gamma_out_max_f_c,v_w)
