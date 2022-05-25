@@ -50,6 +50,7 @@ def calculate_opt_gamma_nominal(data):
     
     data['gamma_out_n'] = plot_gamma_data['gamma_out'][a][0]
     data['gamma_in_n'] = plot_gamma_data['gamma_in'][b][0]
+
     
     #print(gamma_out[a],gamma_in[b])
     #print(data['max_power_m'],data['max_power_e'])
@@ -108,9 +109,10 @@ def run_nominal_analysis(data):
     for key, value in data.items(): 
         file.write('%s:%s\n' % (key, value))
     file.close()
+    return data
 
 data = get_initial_data()
-run_nominal_analysis(data)
+data = run_nominal_analysis(data)
 
     
 
