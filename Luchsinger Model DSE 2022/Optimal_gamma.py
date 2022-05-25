@@ -68,13 +68,13 @@ def calculate_nominal_powers():
 def calculated_updated_projected_area():
     
     gamma_out, gamma_in = calculate_opt_gamma_nominal()
-    A_proj = P_avg_e_n/P_w/((eff_out*F_out*(1-gamma_out)**2-(F_in*(1+gamma_in)**2)/eff_in)*((gamma_out*gamma_in)/(gamma_out+gamma_in)))
-    print(A_proj)
+    A_proj_u = P_avg_e_n/P_w/((eff_out*F_out*(1-gamma_out)**2-(F_in*(1+gamma_in)**2)/eff_in)*((gamma_out*gamma_in)/(gamma_out+gamma_in)))
+    print(A_proj_u)
 
 
 calculate_nominal_powers()
 print(calculate_nominal_tractionF())
-A_proj = calculated_updated_projected_area()
+A_proj_u = calculated_updated_projected_area()
 #calculate_opt_gamma_nominal()
 
        
