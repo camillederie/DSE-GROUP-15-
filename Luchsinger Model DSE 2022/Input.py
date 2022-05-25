@@ -13,6 +13,7 @@ eff_in = 0.579
 eff_out = 0.591
 
 P_avg_e_n = 20000 #Nominal electrical power (W)
+max_reel_speed = 25 #m/s
 
 ## Intermediate calculations
 
