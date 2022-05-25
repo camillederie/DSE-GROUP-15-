@@ -1,7 +1,7 @@
 
 
 v_w_n = 10 #np.linspace(5,20,50)
-CL_out = 0.6 #np.linspace(0.6,1.5,50)
+CL_out = 1.0 #np.linspace(0.6,1.5,50)
 A_proj =  20.79 #21.57 #np.linspace(15,35,50) #19.8 #
 
 rho = 1.18

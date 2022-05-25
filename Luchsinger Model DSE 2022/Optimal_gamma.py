@@ -73,6 +73,7 @@ def calculated_updated_projected_area():
 
 
 calculate_nominal_powers()
+print(calculate_nominal_tractionF())
 A_proj = calculated_updated_projected_area()
 #calculate_opt_gamma_nominal()
 
