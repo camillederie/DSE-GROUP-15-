@@ -47,6 +47,8 @@ def calculate_power_limit_reel_speeds(step):
 
 def calculate_power_before_v_w_n(step):
     
+    gamma_out_n,gamma_in_n = calculate_opt_gamma_nominal()
+
     F_in = 0.07   
     F_out = 5.4
 
@@ -55,7 +57,6 @@ def calculate_power_before_v_w_n(step):
 
     ci = 0
     for i in v_w_before_v_n:
-        gamma_out_n,gamma_in_n = calculate_opt_gamma_nominal()
         P_w = 0.5*rho*i**3
         power_before_v_w_n [ci] = (1/F_out)*P_w*(F_out*(1-gamma_out_n)**2-(F_in*(1+gamma_in_n)**2))*((gamma_out_n*gamma_in_n)/(gamma_out_n+gamma_in_n))
         ci +=1
