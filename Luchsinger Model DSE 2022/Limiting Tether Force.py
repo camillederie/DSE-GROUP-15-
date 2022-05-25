@@ -32,7 +32,7 @@ def calculate_tether_limit_reel_speeds():
     return gamma_in_max_f_c,gamma_out_max_f_c,v_w
 
 def plot_tether_limit_reel_speeds():
-    gamma_in_max_f_c,gamma_out_max_f_c,v_w = calculate_tether_limit_reel_speeds()_     
+    gamma_in_max_f_c,gamma_out_max_f_c,v_w = calculate_tether_limit_reel_speeds()    
     plt.plot(v_w, gamma_in_max_f_c, label = 'Reel-in speed')
     plt.plot(v_w,gamma_out_max_f_c,'--', label = 'Reel-out speed')
     plt.xlabel('Wind speed',fontsize = 16)
