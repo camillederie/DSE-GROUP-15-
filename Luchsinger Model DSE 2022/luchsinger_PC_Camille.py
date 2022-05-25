@@ -8,8 +8,8 @@ CL_out = 1.0 #np.linspace(0.6,1.5,50)
 A_proj = 20.57 #np.linspace(15,35,50) #19.8 #
 
 rho = 1.18
-g_out = 0.2
-g_in = 1.25
+g_out = 0.28
+g_in = 1.6
 lc = 250
 CD_out = 0.2
 CL_in = 0.14
@@ -27,6 +27,7 @@ F_in = CD_in
 tc = (lc/v_w)*((g_out+g_in)/(g_out*g_in))
 t_in = 1/6*tc
 t_out = 5/6*tc
+print(tc)
 
 E_control = 150*tc #Energy usage from control system (W)
 
