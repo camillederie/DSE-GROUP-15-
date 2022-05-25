@@ -1,6 +1,5 @@
 import numpy as np
-from Limiting_Power import *
-from Limiting_Tether_Force import *
+from Optimal_gamma import *
 
 F_in = 0.07   
 F_out = 5.4
@@ -22,11 +21,11 @@ def calculate_three_phase(step):
 
     for i in v_w:
 
-        if v_w <= v_t_n:
+        if i <= v_t_n:
 
             P_w = 0.5*rho*i**3
             P_c [ci] = (1/F_out)*P_w*(F_out*(1-gamma_out_n)**2-(F_in*(1+gamma_in_n)**2))*((gamma_out_n*gamma_in_n)/(gamma_out_n+gamma_in_n))
-        elif v_w <= v_p_n:
+        elif i <= v_p_n:
 
             mu = i/v_w_n
             P_w = 0.5*rho*i**3
@@ -63,7 +62,7 @@ def plot_three_phase_reel_speeds(step):
     plt.plot(v_w, gamma_in_max_f_c, label = 'Reel-in speed')
     plt.plot(v_w,gamma_out_max_f_c,'--', label = 'Reel-out speed')
     plt.xlabel('Wind speed',fontsize = 16)
-    plt.ylabel('Reel speeds',fontsize = 16)
+    plt.ylabel('Reel speeds_three_phase',fontsize = 16)
     plt.legend(fontsize = 16)
     plt.grid()
     plt.show()
@@ -72,7 +71,7 @@ def plot_three_phase_cycle_power(step):
     gamma_in_max_f_c,gamma_out_max_f_c,v_w,P_c = calculate_three_phase(step)
     plt.plot(v_w, P_c)
     plt.xlabel('Wind speed',fontsize = 16)
-    plt.ylabel('P_c',fontsize = 16)
+    plt.ylabel('P_c_three_phase',fontsize = 16)
     plt.legend(fontsize = 16)
     plt.grid()
     plt.show()
