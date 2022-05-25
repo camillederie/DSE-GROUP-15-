@@ -26,8 +26,10 @@ def calculate_power_limit_reel_speeds():
     #also calculates gamma_out
     for i in v_w:
         mu = i/v_w_n
+        P_w = 0.5*rho*i**3
+        
         for j in gamma_in:
-            f_c_mu[cj] = ((1/(mu**2))*(1-gamma_out_n)**2-(F_in/F_out)*(1+j)**2)*((gamma_out_n*j)/(gamma_out_n+mu*j))
+            f_c_mu[cj] = P_w*((1/(mu**2))*(1-gamma_out_n)**2-(F_in/F_out)*(1+j)**2)*((gamma_out_n*j)/(gamma_out_n+mu*j))
             cj +=1
         max_f_c = np.amax(f_c_mu)
         a = np.where(f_c_mu == max_f_c)
