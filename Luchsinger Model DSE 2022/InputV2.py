@@ -4,8 +4,8 @@ def get_initial_data():
     data = {}
 
     data['v_w_n'] = 10 #np.linspace(5,20,50)
-    data['CL_out'] = 1.0 #np.linspace(0.6,1.5,50)
-    data['A_proj'] =  24.185 #20.79 #21.57 #np.linspace(15,35,50) #19.8 #
+    data['CL_out'] = 1.4#1.0 #np.linspace(0.6,1.5,50)
+    data['A_proj'] =  8.18 #24.19 #20.79 #21.57 #np.linspace(15,35,50) #19.8 #
 
     data['rho'] = 1.18
     data['lc'] = 250
@@ -19,6 +19,7 @@ def get_initial_data():
     data['max_reel_speed'] = 25 #m/s
 
     data['a_elev_out'] = 20*np.pi/180 
+    data['a_elev_in'] = 70*np.pi/180
     data['a_elev_in'] = 70*np.pi/180
     ## Intermediate calculations
 

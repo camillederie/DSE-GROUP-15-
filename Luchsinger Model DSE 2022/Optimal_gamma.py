@@ -40,26 +40,14 @@ def calculate_opt_gamma_nominal(data):
         cj +=1
         ci = 0 
 
-
     ## Find maximal mechanical power  ##    
      
-    data['max_power_m'] = np.amax(plot_gamma_data['power_array_m'])
-    data['max_power_e'] = np.amax(plot_gamma_data['power_array_e'])
-    #(a,b) = np.where(power_array_m == max_power_m)
+    #data['max_power_m'] = np.amax(plot_gamma_data['power_array_m'])
+    data['P_elec_opt_gamma'] = np.amax(plot_gamma_data['power_array_e'])
     (a,b) = np.where(plot_gamma_data['power_array_e'] == data['max_power_e'])
     
     data['gamma_out_n'] = plot_gamma_data['gamma_out'][a][0]
     data['gamma_in_n'] = plot_gamma_data['gamma_in'][b][0]
-
-    data['power_m_elev']= data['P_w']*data['A_proj']*(data['F_out']*(np.cos(data['a_elev_out'])-data['gamma_out_n'])**2-(data['F_in']*(data['gamma_in_n']**2+2*np.cos(data['a_elev_in'])*data['gamma_in_n']+1)))*(( data['gamma_out_n']* data['gamma_in_n'])/( data['gamma_out_n']+ data['gamma_in_n']))
-    data['power_e_elev']= data['P_w']*data['A_proj']*(data['eff_out']*data['F_out']*(np.cos(data['a_elev_out'])-data['gamma_out_n'])**2-(data['F_in']*(data['gamma_in_n']**2+2*np.cos(data['a_elev_in'])*data['gamma_in_n']+1))/data['eff_in'])*(( data['gamma_out_n']* data['gamma_in_n'])/( data['gamma_out_n']+ data['gamma_in_n']))
-    data['max_cycle_power'] = data['P_w']*data['A_proj']*data['F_out']*(np.cos(data['a_elev_out']))**3 *4/27
-    #print(gamma_out[a],gamma_in[b])
-
-    #print(data['max_power_m'],data['max_power_e'])
-    #np.savetxt('Power.txt',power_array_e)
-
-
     
     return data, plot_gamma_data
 
