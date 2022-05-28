@@ -10,10 +10,10 @@ F_out = 5.4
 v_w_n = 10
 rho = 1.112
 v_t_n = 12
-v_p_n = 24
+v_p_n = 20
 
-gamma_out_n = 0.3
-gamma_in_n = 1.65
+gamma_out_n = 0.23
+gamma_in_n = 1.3
 
 def calculate_three_phase(step):
     # gamma_out_n,gamma_in_n = data['gamma_out_n'],data['gamma_in_n'] #nominal reel out from optimal_gamma.py
@@ -38,7 +38,7 @@ def calculate_three_phase(step):
 
             # P_w = 0.5*data['rho']*i**3
             P_w = 0.5*rho*i**3
-            P_c [ci] = P_w*(F_out*(1-gamma_out_n)**2-(F_in*(1+gamma_in_n)**2))*((gamma_out_n*gamma_in_n)/(gamma_out_n+gamma_in_n))
+            P_c [ci] = (1/F_out)*P_w*(F_out*(1-gamma_out_n)**2-(F_in*(1+gamma_in_n)**2))*((gamma_out_n*gamma_in_n)/(gamma_out_n+gamma_in_n))
             gamma_in_max_f_c [ci] = gamma_in_n
             gamma_out_max_f_c [ci] = gamma_out_n
             # reel_in_speed [ci] = gamma_in_n*data['v_w_n']
@@ -104,5 +104,5 @@ def plot_three_phase_cycle_power(step):
     plt.grid()
     plt.show()
 
-plot_three_phase_reel_speeds(1000)
-#plot_three_phase_cycle_power(1000)    
+plot_three_phase_reel_speeds(100)
+plot_three_phase_cycle_power(100)    
