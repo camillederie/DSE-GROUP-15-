@@ -1,7 +1,7 @@
 #import modules and input data
 import numpy as np
 from Input import *
-from Optimal_gamma import *
+#from Optimal_gamma import *
 import matplotlib.pyplot as plt
 
 #assume Power and Tether Limit are reached at the same time
@@ -12,8 +12,11 @@ def calculate_power_limit_reel_speeds(step):
     F_out = 5.4
 
     #call optimal nominal gamma
-    gamma_out_n,gamma_in_n = calculate_opt_gamma_nominal() #nominal reel out from optimal_gamma.py
-    
+    #gamma_out_n,gamma_in_n = calculate_opt_gamma_nominal() #nominal reel out from optimal_gamma.py
+    gamma_out_n = 0.3
+    gamma_in_n = 1.65
+
+
     #create lists to have running variables
     v_w = np.linspace(v_w_n,2.5*v_w_n,step)
     gamma_in = np.linspace(gamma_in_n, 0.25, step)
@@ -84,5 +87,5 @@ def plot_power_limit_cycle_power(step):
     plt.grid()
     plt.show()
 
-plot_power_limit_reel_speeds(100)
-plot_power_limit_cycle_power(100)
+plot_power_limit_reel_speeds(1000)
+#plot_power_limit_cycle_power(100)
