@@ -9,8 +9,8 @@ F_in = 0.07
 F_out = 5.4
 v_w_n = 10
 rho = 1.112
-v_t_n = 12
-v_p_n = 20
+v_t_n = 13
+v_p_n = 25
 
 gamma_out_n = 0.23
 gamma_in_n = 1.3
@@ -70,13 +70,15 @@ def calculate_three_phase(step):
             # P_w = 0.5*data['rho']*i**3
             P_w = 0.5*rho*i**3
             #F_out_mu = (F_out/(mu**2))*(((1-gamma_out_n)**2)/((1-(gamma_out_n/mu))**2))
+            gamma_out_max_f_c[ci] = gamma_out_max_f_c[ci-1-b]/mu
+            gamma_out_p = gamma_out_max_f_c[ci-1-b]/(v_p_n/v_t_n)
             for j in gamma_in:
-                f_c_mu[cj] = ((1/(mu**2))*(1-gamma_out_n)**2-(F_in/F_out)*(1+j)**2)*((gamma_out_n*j)/(gamma_out_n+mu*j))
+                # f_c_mu[cj] = ((1/(mu**2*(v_p_n/v_t_n)))*(1-gamma_out_n)**2-(F_in/F_out)*(1+j)**2)*((((v_p_n/v_t_n)-1+gamma_out_n)*j)/(gamma_out_n+mu*((v_p_n/v_t_n)*j+(v_p_n/v_t_n)-1)))
+                f_c_mu[cj] = ((1/(mu**2*(v_p_n/v_t_n)))*(1-gamma_out_p)**2-(F_in/F_out)*(1+j)**2)*(((gamma_out_p)*j)/(gamma_out_p+mu*j))
                 cj +=1
             max_f_c = np.amax(f_c_mu)
             a = np.where(f_c_mu == max_f_c)
             gamma_in_max_f_c[ci] = gamma_in[a]
-            gamma_out_max_f_c[ci] = gamma_out_max_f_c[ci-1-b]/mu
             reel_in_speed [ci] = gamma_in_max_f_c[ci]*i
             reel_out_speed [ci] = gamma_out_max_f_c[ci]*i
             P_c [ci] = P_w*max_f_c
@@ -104,5 +106,5 @@ def plot_three_phase_cycle_power(step):
     plt.grid()
     plt.show()
 
-plot_three_phase_reel_speeds(100)
+plot_three_phase_reel_speeds(1000)
 plot_three_phase_cycle_power(100)    
