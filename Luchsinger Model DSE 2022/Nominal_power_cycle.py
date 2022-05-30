@@ -105,6 +105,49 @@ def calculate_opt_gamma_nominal_elev(data):
     
     return data, plot_gamma_data
 
+def calculate_opt_gamma_in(data):
+
+    plot_gamma_data = {}
+    ## Define gamma range ##
+    # Prohibits reel-in speed from exceeding max reeling speed # 
+    if max_reel_speed <= 2*data['v_w_n']: 
+        lim = data['max_reel_speed']/data['v_w_n']
+    else:
+        lim = 2
+    
+    plot_gamma_data['gamma_in']  = np.linspace(0.01,lim,100)
+    #plot_gamma_data['gamma_out'] = np.linspace(0.01,1,100)
+
+    # gamma_in = np.linspace(1,3,3)
+    # gamma_out = np.linspace(1,3,3)
+
+    ## Set empty arrays ##
+    plot_gamma_data['power_array_m'] = np.zeros(100)
+    plot_gamma_data['power_array_e'] = np.zeros(100)
+    ## Initiate counters ##
+    ci = 0
+    cj = 0
+    
+    for i in plot_gamma_data['gamma_in']: 
+            
+        #plot_gamma_data['power_array_m'][cj][ci] = data['P_w']*data['A_proj']*(data['F_out']*(np.cos(data['a_elev_out'])-j)**2-(data['F_in']*(i**2+2*np.cos(data['a_elev_in'])*i+1)))*((j*i)/(j+i))
+        plot_gamma_data['power_array_e'][ci] = data['P_w']*data['A_proj']*(data['eff_out']*data['F_out']*(np.cos(data['a_elev_out'])-data['gamma_out_n'])**2-(data['F_in']*(i**2+2*np.cos(data['a_elev_in'])*i+1))/data['eff_in'])*((data['gamma_out_n']*i)/(data['gamma_out_n']+i))
+        ci  += 1
+     
+
+
+    ## Find maximal mechanical power  ##    
+     
+    #data['max_power_m'] = np.amax(plot_gamma_data['power_array_m'])
+    data['P_elec_opt_gamma_in'] = np.amax(plot_gamma_data['power_array_e'])
+    #(a,b) = np.where(power_array_m == max_power_m)
+    b = np.where(plot_gamma_data['power_array_e'] == data['P_elec_opt_gamma_in'])
+    
+    #data['gamma_out_n'] = plot_gamma_data['gamma_out'][a][0]
+    data['gamma_in_n'] = plot_gamma_data['gamma_in'][b][0]
+    
+    return data
+
 def plot_gamma_power(data_plot):
     plot_data = data_plot
     hsv_modified = cm.get_cmap('hsv', 256)# create new hsv colormaps in range of 0.3 (green) to 0.7 (blue)
@@ -158,7 +201,7 @@ def calculate_nominal_powers(data):
 
 def calculate_updated_projected_area(data):
     
-    data['A_proj_u'] =  data['P_avg_e_n']/ data['P_w']/((data['eff_out']*data['F_out']*(np.cos(data['a_elev_out'])-data['gamma_out_n'])**2-(data['F_in']*(data['gamma_in_n']**2+2*np.cos(data['a_elev_in'])*data['gamma_in_n']+1))/data['eff_in'])*(( data['gamma_out_n']* data['gamma_in_n'])/( data['gamma_out_n']+ data['gamma_in_n'])))
+    data['A_proj_u'] =  data['P_avg_e_req']/ data['P_w']/((data['eff_out']*data['F_out']*(np.cos(data['a_elev_out'])-data['gamma_out_n'])**2-(data['F_in']*(data['gamma_in_n']**2+2*np.cos(data['a_elev_in'])*data['gamma_in_n']+1))/data['eff_in'])*(( data['gamma_out_n']* data['gamma_in_n'])/( data['gamma_out_n']+ data['gamma_in_n'])))
     #print(data['A_proj_u'])
     return data
 
@@ -171,7 +214,35 @@ def calculate_cycle_param(data):
     return data
 
 def evaluate_tether_force(data): 
-    test =0  
+     
+    data['gamma_out_init'] = data['gamma_out_n']
+    data['A_proj_init'] = data['A_proj']
+    TF_an = {'gamma_out':[],'force': [],'area':[]}
+    while data['gamma_out_n'] < .6:
+        data['gamma_out_n'] += 0.01
+        data = calculate_updated_projected_area(data)
+        data['A_proj'] = data['A_proj_u']
+
+        data = calculate_nominal_tractionF(data)
+        
+        TF_an['gamma_out'].append(data['gamma_out_n'])
+        TF_an['force'].append(data['T_out_elev_n'])
+        TF_an['area'].append(data['A_proj'])
+
+        print
+
+    return TF_an
+         
+def plot_TF_an(TF_an):
+    fig, ax1 = plt.subplots()
+    ax2 = ax1.twiny()
+    ax1.plot(TF_an['gamma_out'],TF_an['force'], color = 'r')
+    ax2.plot(TF_an['area'],TF_an['force'], color = 'b')
+    ax1.set_ylabel('Tether Force (N)')
+    ax1.set_xlabel('Gamma Reel-out', color = 'r')
+    ax2.set_xlabel('Projected Area (m2)', color = 'b')
+    plt.grid()
+    plt.show()
     
 def run_nominal_analysis(data):
     ip = 1
@@ -193,17 +264,59 @@ def run_nominal_analysis(data):
     else: 
         print('The area of the kite is optimal for the required power output.')
     data = calculate_cycle_param(data)
+    
     plot_gamma_power(data_plot)
+
+
     # Write to file #
     file = open("data.txt","w") 
     for key, value in data.items(): 
         file.write('%s:%s\n' % (key, value))
     file.close()
     print('The extended results of the analysis can be found in the data file added to the directory.')
+    #ip2 = input('The tetherforce is now', data['T_out_elev_n'], 'enter 1 if you want to analyse how to lower it, else enter 0: ')
+    ip2 =1
+    if ip2 == 0:
+        quit()
+    elif ip == 1:
+        run_TF_anal(data)
+    else: 
+        print('Enter a valid number!')
+        quit()
     return data
+
+
+
+def run_TF_anal(data):
+    TF_an = evaluate_tether_force(data)
+    #print(TF_an)
+    plot_TF_an(TF_an)
+    data['gamma_out_n'] = float(input('Enter the chosen gamma reel-out to find the correspinding optimal gamma reel-in: '))
+    data['gamma_in_n_init'] = data['gamma_in_n']
+    data = calculate_updated_projected_area(data)
+    data['A_proj'] = data['A_proj_u']
+    data = calculate_opt_gamma_in(data)
+    data = calculate_nominal_tractionF(data)
+    data = calculate_nominal_powers(data)
+    data = calculate_updated_projected_area(data)
+
+    print('The new gamma reel-in is: ', data['gamma_in_n'])
+    # Write to file #
+    file = open("data_TF_an.txt","w") 
+    for key, value in data.items(): 
+        file.write('%s:%s\n' % (key, value))
+    file.close()
+    print('The extended results of the analysis can be found in the data file added to the directory.')
+
+    
+
+
+
 
 data = get_initial_data()
 data = run_nominal_analysis(data)  
+
+
 
     
 
