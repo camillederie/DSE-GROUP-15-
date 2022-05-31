@@ -11,6 +11,7 @@ v_w_n = 10
 rho = 1.112
 v_t_n = 13
 v_p_n = 25
+theta = 30*np.pi/180
 
 gamma_out_n = 0.23
 gamma_in_n = 1.3
@@ -38,7 +39,7 @@ def calculate_three_phase(step):
 
             # P_w = 0.5*data['rho']*i**3
             P_w = 0.5*rho*i**3
-            P_c [ci] = (1/F_out)*P_w*(F_out*(1-gamma_out_n)**2-(F_in*(1+gamma_in_n)**2))*((gamma_out_n*gamma_in_n)/(gamma_out_n+gamma_in_n))
+            P_c [ci] = (1/F_out)*P_w*(F_out*(np.cos(theta)-gamma_out_n)**2-(F_in*(gamma_in_n**2+2*np.cos(theta)*gamma_in_n+1)))*((gamma_out_n*gamma_in_n)/(gamma_out_n+gamma_in_n))
             gamma_in_max_f_c [ci] = gamma_in_n
             gamma_out_max_f_c [ci] = gamma_out_n
             # reel_in_speed [ci] = gamma_in_n*data['v_w_n']
@@ -51,7 +52,7 @@ def calculate_three_phase(step):
             # P_w = 0.5*data['rho']*i**3
             P_w = 0.5*rho*i**3
             for j in gamma_in:
-                f_c_mu[cj] = ((1/(mu**2))*(1-gamma_out_n)**2-(F_in/F_out)*(1+j)**2)*((j*(mu-1+gamma_out_n))/(mu*j+mu-1+gamma_out_n))
+                f_c_mu[cj] = ((1/(mu**2))*(np.cos(theta)-gamma_out_n)**2-(F_in/F_out)*(1+j*np.cos(theta)*2+j**2))*((j*(mu-1+gamma_out_n))/(mu*j+mu-1+gamma_out_n))
                 cj +=1
             max_f_c = np.amax(f_c_mu)
             a = np.where(f_c_mu == max_f_c)
@@ -73,7 +74,7 @@ def calculate_three_phase(step):
             gamma_out_max_f_c[ci] = gamma_out_max_f_c[ci-1-b]/mu
             gamma_out_p = gamma_out_max_f_c[ci-1-b]/(v_p_n/v_t_n)
             for j in gamma_in:
-                f_c_mu[cj] = ((1/(mu**2*(v_p_n/v_t_n)))*(1-gamma_out_n)**2-(F_in/F_out)*(1+j)**2)*((((v_p_n/v_t_n)-1+gamma_out_n)*j)/(gamma_out_n+mu*(v_p_n/v_t_n)*j+(v_p_n/v_t_n)-1))
+                f_c_mu[cj] = ((1/(mu**2*(v_p_n/v_t_n)))*(np.cos(theta)-gamma_out_n)**2-(F_in/F_out)*(1+j*np.cos(theta)*2+j**2))*((((v_p_n/v_t_n)-1+gamma_out_n)*j)/(gamma_out_n+mu*(v_p_n/v_t_n)*j+(v_p_n/v_t_n)-1))
                 #f_c_mu[cj] = ((1/(mu**2*(v_p_n/v_t_n)))*(1-gamma_out_p)**2-(F_in/F_out)*(1+j)**2)*(((gamma_out_p)*j)/(gamma_out_p+mu*j)
                 cj +=1
             max_f_c = np.amax(f_c_mu)
