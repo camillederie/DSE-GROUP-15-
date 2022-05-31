@@ -202,7 +202,7 @@ def calculate_nominal_powers(data):
 def calculate_updated_projected_area(data):
     
     data['A_proj_u'] =  data['P_avg_e_req']/ data['P_w']/((data['eff_out']*data['F_out']*(np.cos(data['a_elev_out'])-data['gamma_out_n'])**2-(data['F_in']*(data['gamma_in_n']**2+2*np.cos(data['a_elev_in'])*data['gamma_in_n']+1))/data['eff_in'])*(( data['gamma_out_n']* data['gamma_in_n'])/( data['gamma_out_n']+ data['gamma_in_n'])))
-    #print(data['A_proj_u'])
+    print(data['A_proj_u'])
     return data
 
 def calculate_cycle_param(data):
@@ -243,10 +243,18 @@ def plot_TF_an(TF_an):
     ax2.set_xlabel('Projected Area (m2)', color = 'b')
     plt.grid()
     plt.show()
+
+def calculate_apparent_speed():
+    v_out = data['v_w_n']*data['gamma_out_n']
+    v_in  = data['v_w_n']*data['gamma_in_n']
+    v_w   = data['v_w_n']
+    data['v_a_out'] = np.sqrt(v_w**2-2*v_w*v_out*np.cos(data['a_elev_out'])+v_out**2)
+    data['v_a_in'] = np.sqrt(v_w**2+2*v_w*v_in*np.cos(data['a_elev_in'])+v_in**2)
+    return data
     
 def run_nominal_analysis(data):
     ip = 1
-    ip = int(input('Enter 1 if you want to take the tether elevation into account for finding the optimal reeling speeds, 0 for ignoring it: '))
+    #ip = int(input('Enter 1 if you want to take the tether elevation into account for finding the optimal reeling speeds, 0 for ignoring it: '))
     if ip == 0:
         data = calculate_opt_gamma_nominal(data)[0]
         data_plot = calculate_opt_gamma_nominal(data)[1]
@@ -275,10 +283,10 @@ def run_nominal_analysis(data):
     file.close()
     print('The extended results of the analysis can be found in the data file added to the directory.')
     #ip2 = input('The tetherforce is now', data['T_out_elev_n'], 'enter 1 if you want to analyse how to lower it, else enter 0: ')
-    ip2 =1
+    ip2 = 1
     if ip2 == 0:
         quit()
-    elif ip == 1:
+    elif ip2 == 1:
         run_TF_anal(data)
     else: 
         print('Enter a valid number!')
@@ -297,8 +305,10 @@ def run_TF_anal(data):
     data['A_proj'] = data['A_proj_u']
     data = calculate_opt_gamma_in(data)
     data = calculate_nominal_tractionF(data)
-    data = calculate_nominal_powers(data)
     data = calculate_updated_projected_area(data)
+    data['A_proj'] = data['A_proj_u']
+    data = calculate_nominal_powers(data)
+    data = calculate_apparent_speed(data)
 
     print('The new gamma reel-in is: ', data['gamma_in_n'])
     # Write to file #
@@ -307,11 +317,7 @@ def run_TF_anal(data):
         file.write('%s:%s\n' % (key, value))
     file.close()
     print('The extended results of the analysis can be found in the data file added to the directory.')
-
-    
-
-
-
+     
 
 data = get_initial_data()
 data = run_nominal_analysis(data)  
