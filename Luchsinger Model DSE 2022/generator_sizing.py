@@ -229,13 +229,9 @@ def evaluate_tether_force(data):
         TF_an['force'].append(data['T_out_elev_n'])
         TF_an['area'].append(data['A_proj'])
 
-    
-    return TF_an
+        print
 
-def evaluate_tether_force_areafix(data):
-    data['gamma_out_v_w_gust'] = np.cos(data['a_elev_out']) - np.sqrt(10329/(0.5*data['rho']*data['v_w_adj']**2*data['A_proj']*data['F_out']))
-    
-    return data
+    return TF_an
          
 def plot_TF_an(TF_an):
     fig, ax1 = plt.subplots()
@@ -284,6 +280,8 @@ def size_generator(data):
     return data
     
 
+
+
 def run_nominal_analysis(data):
     ip = 1
     #ip = int(input('Enter 1 if you want to take the tether elevation into account for finding the optimal reeling speeds, 0 for ignoring it: '))
@@ -320,18 +318,15 @@ def run_nominal_analysis(data):
         quit()
     elif ip2 == 1:
         run_TF_anal(data)
-    
     else: 
         print('Enter a valid number!')
         quit()
-    run_TF_anal_wo_areaupdate(data)
-    
     return data
 
 def run_TF_anal(data):
     TF_an = evaluate_tether_force(data)
     #print(TF_an)
-    plot_TF_an(TF_an)
+    #plot_TF_an(TF_an)
     data['gamma_out_n'] = 0.43#float(input('Enter the chosen gamma reel-out to find the correspinding optimal gamma reel-in: '))
     data['gamma_in_n_init'] = data['gamma_in_n']
     data = calculate_updated_projected_area(data)
@@ -344,25 +339,16 @@ def run_TF_anal(data):
     data = calculate_nominal_powers(data)
     data = calculate_apparent_speed(data)
     data = size_supercap(data)
+    data = size_generator(data)
+
     
-   
     # Write to file #
     file = open("data_TF_an.txt","w") 
     for key, value in data.items(): 
         file.write('%s:%s\n' % (key, value))
     file.close()
     print('The extended results of the analysis can be found in the data file added to the directory.')
-
-
-def run_TF_anal_wo_areaupdate(data):   
-    TF_an = evaluate_tether_force(data)
-    plot_TF_an(TF_an)
-    data['gamma_out_n'] = float(input('Enter the chosen gamma reel-out to find the correspinding optimal gamma reel-in: '))
-    data = calculate_opt_gamma_in(data)
-    
-    data = size_generator(data)
-    print(data['rpm'], data['G_power'],data['v_w_adj'],data['gamma_out_adj'],)
-    return data
+     
 
 data = get_initial_data()
 data = run_nominal_analysis(data)  
