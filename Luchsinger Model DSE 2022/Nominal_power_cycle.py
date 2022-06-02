@@ -356,7 +356,7 @@ def run_TF_anal(data):
 
 def run_TF_anal_wo_areaupdate(data):   
     TF_an = evaluate_tether_force(data)
-    plot_TF_an(TF_an)
+    #plot_TF_an(TF_an)
     data['gamma_out_n'] = float(input('Enter the chosen gamma reel-out to find the correspinding optimal gamma reel-in: '))
     data = calculate_opt_gamma_in(data)
     
