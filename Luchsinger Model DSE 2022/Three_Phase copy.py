@@ -9,10 +9,10 @@ F_in = data['F_in']
 F_out = data['F_out']
 #v_w_n = 10
 #rho = 1.112
-v_t_n = 10
-v_p_n = 16
+v_t_n = data['v_w_n']
+P_out_max = 50000
 # theta = 30*np.pi/180
-
+10
 #gamma_out_n = 0.23
 #gamma_in_n = 1.3
 
@@ -38,7 +38,7 @@ def calculate_three_phase(step):
 
     for j in gamma_in:
         for k in gamma_out:
-            f_c[cj][ck] = ((np.cos(data['a_elev_out'])-k)**2-((F_in/F_out)*(j**2+2*np.cos(data['a_elev_in'])*j+1)))*((k*j)/(k+j))
+            f_c[cj][ck] = (data['eff_out']*((np.cos(data['a_elev_out'])-k)**2)-((F_in/F_out)*(j**2+2*np.cos(data['a_elev_in'])*j+1))/data['eff_in'])*((k*j)/(k+j))
             ck +=1
         ck = 0
         cj +=1
@@ -48,13 +48,15 @@ def calculate_three_phase(step):
     gamma_out_n = gamma_out[b]
     cj = 0
 
+    v_p_n = P_out_max/data[]
+
     for i in v_w:
 
         if i <= v_t_n:
 
             P_w = 0.5*data['rho']*i**3
             #P_w = 0.5*rho*i**3
-            f_c_mu[ci] = ((np.cos(data['a_elev_out'])- gamma_out_n)**2-((F_in/F_out)*(gamma_in_n**2+2*np.cos(data['a_elev_in'])*gamma_in_n+1)))*(( gamma_out_n*gamma_in_n)/( gamma_out_n+gamma_in_n))
+            f_c_mu[ci] = (data['eff_out']*((np.cos(data['a_elev_out'])- gamma_out_n)**2)-((F_in/F_out)*(gamma_in_n**2+2*np.cos(data['a_elev_in'])*gamma_in_n+1))/data['eff_in'])*(( gamma_out_n*gamma_in_n)/( gamma_out_n+gamma_in_n))
             P_c [ci] = P_w*f_c_mu[ci]    
             gamma_in_max_f_c [ci] = gamma_in_n
             gamma_out_max_f_c [ci] =  gamma_out_n
@@ -86,7 +88,7 @@ def calculate_three_phase(step):
             P_w = 0.5*data['rho']*i**3
             #P_w = 0.5*rho*i**3
             for j in gamma_in:
-                f_c_mu[cj] = ((1/(mu**2))*(np.cos(data['a_elev_out'])- gamma_out_n)**2-((F_in/F_out)*(1+j*np.cos(data['a_elev_in'])*2+j**2)))*((j*(mu-1+ gamma_out_n))/(mu*j+mu-1+ gamma_out_n))
+                f_c_mu[cj] = (data['eff_out']*((1/(mu**2))*(np.cos(data['a_elev_out'])- gamma_out_n)**2)-(((F_in/F_out)*(1+j*np.cos(data['a_elev_in'])*2+j**2))/data['eff_in']))*((j*(mu-1+ gamma_out_n))/(mu*j+mu-1+ gamma_out_n))
                 cj +=1
             max_f_c = np.amax(f_c_mu)
             a = np.where(f_c_mu == max_f_c)
@@ -110,7 +112,7 @@ def calculate_three_phase(step):
             #gamma_out_p = gamma_out_max_f_c[ci-1-b]/(v_p_n/v_t_n)
             #scale = (((np.cos(data['a_elev_out'])-data['gamma_out_n'])**2-(F_in/F_out)*(1+v_p_n*np.cos(data['a_elev_in'])*2+v_p_n**2))*(((data['gamma_out_n'])*v_p_n)/(data['gamma_out_n']+v_p_n)))/(((1/((v_p_n/v_t_n)**2))*(np.cos(data['a_elev_out'])-data['gamma_out_n'])**2-(F_in/F_out)*(1+v_p_n*np.cos(data['a_elev_in'])*2+v_p_n**2))*((v_p_n*((v_p_n/v_t_n)-1+data['gamma_out_n']))/((v_p_n/v_t_n)*v_p_n+(v_p_n/v_t_n)-1+data['gamma_out_n'])))
             for j in gamma_in:
-                f_c_mu[cj] = (((1/((mu**2)*((v_p_n/v_t_n)**2)))*(np.cos(data['a_elev_out'])- gamma_out_n)**2-(F_in/F_out)*(1+j*np.cos(data['a_elev_in'])*2+j**2))*((((v_p_n/v_t_n)-1+gamma_out_n)*j)/(gamma_out_n+mu*(v_p_n/v_t_n)*j+(v_p_n/v_t_n)-1)))
+                f_c_mu[cj] = ((data['eff_out']*((1/((mu**2)*((v_p_n/v_t_n)**2)))*(np.cos(data['a_elev_out'])- gamma_out_n)**2)-(F_in/F_out)*(1+j*np.cos(data['a_elev_in'])*2+j**2)/data['eff_in'])*((((v_p_n/v_t_n)-1+gamma_out_n)*j)/(gamma_out_n+mu*(v_p_n/v_t_n)*j+(v_p_n/v_t_n)-1)))
                 # f_c_mu[cj] = ((1/(mu**2*(v_p_n/v_t_n)))*(np.cos(data['a_elev_out'])-data['gamma_out_n'])**2-(F_in/F_out)*(1+j*np.cos(data['a_elev_in'])*2+j**2))*((((v_p_n/v_t_n)-1+data['gamma_out_n'])*j)/(data['gamma_out_n']+mu*(v_p_n/v_t_n)*j+(v_p_n/v_t_n)-1))
                 #f_c_mu[cj] = ((1/(mu**2*(v_p_n/v_t_n)))*(1-gamma_out_p)**2-(F_in/F_out)*(1+j)**2)*(((gamma_out_p)*j)/(gamma_out_p+mu*j)
                 cj +=1
