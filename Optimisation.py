@@ -24,8 +24,8 @@ while abs(A_proj_last-A_proj) > 2:
     print('Hey Bradda, the optimisation has started. Leggo! This is cycle: ',c)
     ## AERO ##
     print('Aero started')
-    CL_average_out, CD_average_out, CL3_CD2_average_out, A_proj, Strut_area_av = main_aero_function(A_proj, Points, Kite_segments, N_split, AoA_range_out, TAS, Print=False)
-    CL_average_in, CD_average_in, CL3_CD2_average_in, A_proj, Strut_area_av = main_aero_function(A_proj, Points, Kite_segments, N_split, AoA_range_in, TAS, Print=False)
+    CL_average_out, CD_average_out, CL3_CD2_average_out, CD_average_in, A_proj, Strut_area_av = main_aero_function(A_proj, Points, Kite_segments, N_split, AoA_range_out, AoA_range_in TAS, Print=False)
+    # CL_average_in, CD_average_in, CL3_CD2_average_in, A_proj, Strut_area_av = main_aero_function(A_proj, Points, Kite_segments, N_split, AoA_range_in, TAS, Print=False)
     print('Aero part finished')
     ## POWER ##
     data = get_initial_data()
@@ -33,7 +33,7 @@ while abs(A_proj_last-A_proj) > 2:
     data['F_in'] = CD_average_in
     data['CL_out'] = CL_average_out
     data['CD_out'] = CD_average_out
-    data['CL_in'] = CL_average_in
+    # data['CL_in'] = CL_average_in
     data['CD_in'] = CD_average_in
     data =  run_nominal_analysis(data) 
     A_proj = data['A_proj']
