@@ -6,8 +6,6 @@ from Luchsinger.luchsingermodel.Nominal_power_cycle import  run_nominal_analysis
 from Luchsinger.luchsingermodel.InputV2 import get_initial_data
 from Aero.aero_main_function import main_aero_function
 
-
-
 A_proj = 16.65
 Points = 10000
 Kite_segments = 12
@@ -29,3 +27,18 @@ data['CD_in'] = CD_average_in
 data =  run_nominal_analysis(data) 
 A_proj = data['A_proj']
 T_F_out = data['T_out_elev_n']
+
+
+#DEFINITIONS
+kite_area_in = A_proj
+avg_strut_in = 0.6867
+len_drum_in = 1.10
+angle_in = 30
+extra_len_in = 75
+nom_load_in = 10329.316
+saf_fac_in = 2
+kite_mass_margin = 1.05
+t_out = 103.5
+t_in = 11.5
+
+structures_calculation(kite_area_in, avg_strut_in, len_drum_in, angle_in, extra_len_in, nom_load_in, saf_fac_in, kite_mass_margin, t_out, t_in)

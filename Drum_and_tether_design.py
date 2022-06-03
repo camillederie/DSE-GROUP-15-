@@ -14,7 +14,6 @@ from scipy.optimize import curve_fit
 
 #DEFINITIONS
 kite_area_in = 20.16
-reel_out_perc_in = 89
 avg_strut_in = 0.6867
 len_drum_in = 1.10
 angle_in = 30
