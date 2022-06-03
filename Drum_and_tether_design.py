@@ -176,7 +176,7 @@ def structures_calculation(kite_area_in, avg_strut_in, len_drum_in, angle_in, ex
     reel_out_perc = 100 * (t_out) / (t_out + t_in) #89                  #Update when possible
     avg_strut_A = avg_strut_in #0.6867                # m^2
 
-    diam = tether_list[2][1]*10**(-3)
+    diam = tether_list[2][1]*10**(-3) #is this also hardcoded?
     # len_drum, d_drum = drum_sizing(True, angle, oper_range, tether_d, saf_marg, dD_dT, extra_len)
 
 
@@ -195,6 +195,7 @@ def structures_calculation(kite_area_in, avg_strut_in, len_drum_in, angle_in, ex
     print(f'{"D_drum = "}{d_drum}{" m"}')
     print(f'{"Total factor = "}{total_SSL_factors(reel_out_perc)}{" [-]"}')
     print(f'{"Load = "}{round(tension(nom_load, diam)/10**6, 3)}{" MPa"}')  #Read fig 33.16, multiply value from graph by factor
+    print(f'{"Tether diameter= "}{(diam)}{"mm"}')
     print(f'{"Tether density = "}{1/((diam/2)**2*pi)/100}{" kg/m^3"}')
     print(f'{"Tether mass = "}{(tether_list[2][2])*6.55}{" kg"}')
     print(f'{"Tether volume = "}{(tet_len_reel_out_end+extra_len)*(diam/2)**2*pi}{" m^3"}')
@@ -213,6 +214,5 @@ def structures_calculation(kite_area_in, avg_strut_in, len_drum_in, angle_in, ex
     Using an averaged value of the surface of all struts (0.687 m\textsuperscript{2}), a single strut can be added to the system to approximate the weight. This weight is multiplied by a safety factor of 2, because the strut is thicker than the canopy. A 5% margin on the weight will be taken, to keep possible inaccuracies of the used data into account.
     The total weight and the individual contributions of the canopy and the airframe can be seen in ... ."""
     return
-# if name == "__main__":
-
-structures_calculation(kite_area_in, avg_strut_in, len_drum_in, angle_in, extra_len_in, nom_load_in, saf_fac_in, kite_mass_margin, t_out, t_in)
+if __name__ == "__main__":
+    structures_calculation(kite_area_in, avg_strut_in, len_drum_in, angle_in, extra_len_in, nom_load_in, saf_fac_in, kite_mass_margin, t_out, t_in)
