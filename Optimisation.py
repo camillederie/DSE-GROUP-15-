@@ -24,7 +24,7 @@ while abs(A_proj_last-A_proj) > 2:
     print('Hey Bradda, the optimisation has started. Leggo! This is cycle: ',c)
     ## AERO ##
     print('Aero started')
-    CL_average_out, CD_average_out, CL3_CD2_average_out, CD_average_in, A_proj, Strut_area_av = main_aero_function(A_proj, Points, Kite_segments, N_split, AoA_range_out, AoA_range_in TAS, Print=False)
+    CL_average_out, CD_average_out, CL3_CD2_average_out, CD_average_in, A_proj, Strut_area_av = main_aero_function(A_proj_last, Points, Kite_segments, N_split, AoA_range_out, AoA_range_in, TAS, Print=False)
     # CL_average_in, CD_average_in, CL3_CD2_average_in, A_proj, Strut_area_av = main_aero_function(A_proj, Points, Kite_segments, N_split, AoA_range_in, TAS, Print=False)
     print('Aero part finished')
     ## POWER ##
