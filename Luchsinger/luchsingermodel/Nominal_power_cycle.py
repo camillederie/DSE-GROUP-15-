@@ -242,7 +242,7 @@ def evaluate_tether_force(data):
         TF_an['force'].append(data['T_out_elev_n'])
         TF_an['area'].append(data['A_proj'])
 
-    plot_TF_an(TF_an)
+    #plot_TF_an(TF_an)
     #data['gamma_out_n'] 
     data['gamma_out_n'] = 0.43#float(input('Enter the chosen gamma reel-out to find the correspinding optimal gamma reel-in: '))
     data = calculate_opt_gamma_in(data)
@@ -295,7 +295,7 @@ def size_supercap(data):
 def size_generator(data):
     data['rpm_n_out'] = data['v_w_n']*data['gamma_out_n']/(data['drum_circum'])*60
     data['rpm_n_in'] = data['v_w_n']*data['gamma_in_n']/(data['drum_circum'])*60
-    print(data['rpm_n_out'],data['rpm_n_in'])
+   # print(data['rpm_n_out'],data['rpm_n_in'])
     data['GR_min'] = data['rpm_n_out']/data['rpm_min']
     data['GR_n'] = data['rpm_n_out']/data['rpm_n']
     data['GR_max'] = data['rpm_n_out']/data['rpm_max']
@@ -321,7 +321,7 @@ def size_generator(data):
     plt.legend()
     plt.grid()
     
-    plt.show()
+    #plt.show()
 
     return data
     
@@ -347,7 +347,7 @@ def run_nominal_analysis(data):
         print('The area of the kite is optimal for the required power output.')
     data = calculate_cycle_param(data)
     
-    plot_gamma_power(data_plot)
+    #plot_gamma_power(data_plot)
 
 
     # Write to file #

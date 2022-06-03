@@ -1,13 +1,13 @@
 # -*- coding: utf-8 -*-
 import numpy as np
-from Aero.functions_VSM_LLT import *
+
 def main_aero_function(A_proj, Points, Kite_segments, N_split, AoA_range, V_wind, Print=False):
     import os
     import numpy as np
     import matplotlib.pyplot as plt
     import time
-    import functions_VSM_LLT as VSM
-    import Coordinates_generation as CGEN
+    import Aero.functions_VSM_LLT as VSM
+    import Aero.Coordinates_generation as CGEN
 
     script_dir = os.path.dirname(__file__)
     results_dir = os.path.join(script_dir, 'Results/')
@@ -176,4 +176,5 @@ def main_aero_function(A_proj, Points, Kite_segments, N_split, AoA_range, V_wind
     print('Aero Analysis Completed')
     return CL_average, CD_average, CL3_CD2_average, A_proj, Strut_area_av
 
-a,b,c,d,e = main_aero_function(16.65, 10000, 12, 5, np.arange(8, 10.5, 0.5), 32.5, False)
+if __name__ == '__main__':
+    a,b,c,d,e = main_aero_function(16.65, 1000, 12, 5, np.arange(8, 10.5, 0.5), 32.5, False)
