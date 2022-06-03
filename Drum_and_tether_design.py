@@ -25,6 +25,7 @@ kite_mass_margin = 1.05
 t_out = 103.5
 t_in = 11.5
 
+
 def structures_calculation(kite_area_in, avg_strut_in, len_drum_in, angle_in, extra_len_in, nom_load_in, saf_fac_in, kite_mass_margin, t_out, t_in):
     #(double _winding = boolean True if double winded, angle = kite angle, oper_range = operative range in list, tether_d = tether diameter, saf_marg = safety margin, dD_dT = drum diameter of tether diameter, extra_len = extra length of tether )
     def drum_sizing(double_winding , angle, oper_range, tether_d, saf_marg, dD_dT, extra_len):
