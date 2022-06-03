@@ -232,8 +232,8 @@ def evaluate_tether_force(data):
     
     return TF_an
 
-def evaluate_tether_force_areafix(data):
-    data['gamma_out_v_w_gust'] = np.cos(data['a_elev_out']) - np.sqrt(10329/(0.5*data['rho']*data['v_w_adj']**2*data['A_proj']*data['F_out']))
+def evaluate_adj_wind_areafix(v_w_adj):
+    data['gamma_out_v_w_adj'] = np.cos(data['a_elev_out']) - np.sqrt(10329/(0.5*data['rho']*v_w_adj**2*data['A_proj']*data['F_out']))
     
     return data
          
@@ -272,11 +272,28 @@ def size_generator(data):
     data['GR_min'] = data['rpm_n_out']/data['rpm_min']
     data['GR_n'] = data['rpm_n_out']/data['rpm_n']
     data['GR_max'] = data['rpm_n_out']/data['rpm_max']
-    v_r_out = np.linspace(2,10)
+    data['GR_motor'] = data['rpm_n_in']/data['rpm_motor']
 
+
+    data = evaluate_adj_wind_areafix(data['v_w_adj'])
+    v_r_out = data['gamma_out_v_w_adj']*data['v_w_adj']
+    rpm_max = np.ones(len(v_r_out))*data['rpm_max']
+    
     rpm = (v_r_out/(data['drum_circum'])*60)/data['GR_n']
+    data['P_out_e_adj_wind'] = (((rpm+436.25)/69.124))
 
-    plt.plot(v_r_out,rpm)
+    fig, ax1 = plt.subplots()
+    ax2 = ax1.twinx()
+
+    ax1.plot(data['v_w_adj'],data['P_out_e_adj_wind'], color = 'g')
+    ax2.plot(data['v_w_adj'],rpm_max, color = 'r', label = 'Maximal rotational speed')
+    ax2.plot(data['v_w_adj'],rpm, color = 'b', label = 'Rotational speed and output power vs wind speed')
+    ax2.set_ylabel('Rotational speed of generator (rpm)')
+    ax1.set_xlabel('Wind speed (m/s)')
+    ax1.set_ylabel('Electrical output power (kW)')
+    plt.legend()
+    plt.grid()
+    
     plt.show()
 
 
@@ -305,7 +322,7 @@ def run_nominal_analysis(data):
         print('The area of the kite is optimal for the required power output.')
     data = calculate_cycle_param(data)
     
-    #plot_gamma_power(data_plot)
+    plot_gamma_power(data_plot)
 
 
     # Write to file #
@@ -324,7 +341,6 @@ def run_nominal_analysis(data):
     else: 
         print('Enter a valid number!')
         quit()
-    run_TF_anal_wo_areaupdate(data)
     
     return data
 
@@ -344,7 +360,7 @@ def run_TF_anal(data):
     data = calculate_nominal_powers(data)
     data = calculate_apparent_speed(data)
     data = size_supercap(data)
-    
+    data = size_generator(data)
    
     # Write to file #
     file = open("data_TF_an.txt","w") 
@@ -354,15 +370,15 @@ def run_TF_anal(data):
     print('The extended results of the analysis can be found in the data file added to the directory.')
 
 
-def run_TF_anal_wo_areaupdate(data):   
-    TF_an = evaluate_tether_force(data)
-    #plot_TF_an(TF_an)
-    data['gamma_out_n'] = float(input('Enter the chosen gamma reel-out to find the correspinding optimal gamma reel-in: '))
-    data = calculate_opt_gamma_in(data)
+# def run_TF_anal_wo_areaupdate(data):   
+#     TF_an = evaluate_tether_force(data)
+#     #plot_TF_an(TF_an)
+#     data['gamma_out_n'] = float(input('Enter the chosen gamma reel-out to find the correspinding optimal gamma reel-in: '))
+#     data = calculate_opt_gamma_in(data)
     
-    data = size_generator(data)
-    print(data['rpm'], data['G_power'],data['v_w_adj'],data['gamma_out_adj'],)
-    return data
+#     data = size_generator(data)
+#     print(data['rpm'], data['G_power'],data['v_w_adj'],data['gamma_out_adj'],)
+#     return data
 
 data = get_initial_data()
 data = run_nominal_analysis(data)  
