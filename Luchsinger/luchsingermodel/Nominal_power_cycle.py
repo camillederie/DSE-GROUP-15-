@@ -1,7 +1,6 @@
 
-from InputV2 import *
+#from InputV2 import *
 import numpy as np 
-from Input import *
 from matplotlib import cm
 from matplotlib.colors import ListedColormap,LinearSegmentedColormap
 import matplotlib.pyplot as plt
@@ -13,7 +12,7 @@ def calculate_opt_gamma_nominal(data):
     plot_gamma_data = {}
     # Define gamma range ##
     #Prohibits reel-in speed from exceeding max reeling speed # 
-    if max_reel_speed <= 2*data['v_w_n']: 
+    if data['max_reel_speed'] <= 2*data['v_w_n']: 
         lim = data['max_reel_speed']/data['v_w_n']
     else:
         lim = 2.6
@@ -56,7 +55,7 @@ def calculate_opt_gamma_nominal_elev(data):
     plot_gamma_data = {}
     # Define gamma range ##
     #Prohibits reel-in speed from exceeding max reeling speed # 
-    if max_reel_speed <= 2*data['v_w_n']: 
+    if data['max_reel_speed'] <= 2*data['v_w_n']: 
         lim = data['max_reel_speed']/data['v_w_n']
     else:
         lim = 2.6
@@ -112,7 +111,7 @@ def calculate_opt_gamma_in(data):
     plot_gamma_data = {}
     ## Define gamma range ##
     # Prohibits reel-in speed from exceeding max reeling speed # 
-    if max_reel_speed <= 2*data['v_w_n']: 
+    if data['max_reel_speed'] <= 2*data['v_w_n']: 
         lim = data['max_reel_speed']/data['v_w_n']
     else:
         lim = 2
@@ -383,8 +382,8 @@ def run_TF_anal(data):
     file.close()
     print('The extended results of the analysis can be found in the data file added to the directory.')
 
-
-data = run_nominal_analysis(get_initial_data())  
+#data = get_initial_data()
+#data = run_nominal_analysis(data)  
 
 
 

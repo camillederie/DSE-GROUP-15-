@@ -1,9 +1,10 @@
 #Optimisation of the Main System Parameters
 import numpy as np
 
-from Drum_and_tether_design import
-from Nominal_power_cycle import  run_nominal_analysis, get_initial_data 
-from aero_main_function import main_aero_function
+from Drum_and_tether_design import *
+from Luchsinger.luchsingermodel.Nominal_power_cycle import  run_nominal_analysis
+from Luchsinger.luchsingermodel.InputV2 import get_initial_data
+from Aero.aero_main_function import main_aero_function
 
 
 
@@ -21,6 +22,10 @@ CL_average_in, CD_average_in, CL3_CD2_average_in, A_proj, Strut_area_av = main_a
 data = get_initial_data()
 data['F_out'] = CL3_CD2_average_out
 data['F_in'] = CD_average_in
+data['CL_out'] = CL_average_out
+data['CD_out'] = CD_average_out
+data['CL_in'] = CL_average_in
+data['CD_in'] = CD_average_in
 data =  run_nominal_analysis(data) 
 A_proj = data['A_proj']
 T_F_out = data['T_out_elev_n']
