@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 import numpy as np
+from Aero.functions_VSM_LLT import *
 def main_aero_function(A_proj, Points, Kite_segments, N_split, AoA_range, V_wind, Print=False):
     import os
     import numpy as np
