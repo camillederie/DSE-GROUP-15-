@@ -2,7 +2,7 @@
 """
 Created on Mon May 23 11:46:02 2022
 
-@author: only1
+@author: Joris
 """
 from math import sin,radians,pi,ceil
 import numpy as np
