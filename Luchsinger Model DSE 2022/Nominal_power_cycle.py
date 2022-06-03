@@ -326,7 +326,7 @@ def run_nominal_analysis(data):
 
 
     # Write to file #
-    file = open("data.txt","w") 
+    file = open("Luchsinger\data.txt","w") 
     for key, value in data.items(): 
         file.write('%s:%s\n' % (key, value))
     file.close()
@@ -363,7 +363,7 @@ def run_TF_anal(data):
     data = size_generator(data)
    
     # Write to file #
-    file = open("data_TF_an.txt","w") 
+    file = open("Luchsinger\data_TF_an.txt","w") 
     for key, value in data.items(): 
         file.write('%s:%s\n' % (key, value))
     file.close()
