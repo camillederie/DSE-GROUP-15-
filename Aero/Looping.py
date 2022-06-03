@@ -25,18 +25,19 @@ Kite15 = True   # Set parameter for own kite or v3 kite
 # Definition of the geometry
 if Kite15 == True:
     Name1 = 'Kite15'
-    Atot = 13.74  # Projected area
+    Atot = 21.54  # Projected area
     Segments = 10  # Number of kite segments
     Points = 1000000  # Number of points for coord function
     Plotting = False
     # CAD = VSM.get_Kite15_coords()  # Geometry nodes locations
-    coords, chords = CGEN.Generate_Kite15_coords(Atot, Segments, Points, Plotting)
+    coords, chords, MAC, arclength = CGEN.Generate_Kite15_coords(Atot, Segments, Points, Plotting)
     # coords = VSM.struct2aero_geometry(CAD)  # Change geometry to definition
     N = int(len(coords) / 2)  # Number of sections defined
 
     # LE thickness at each section [m]
     t = [0.104, 0.16, 0.18, 0.19, 0.195, 0.195, 0.19, 0.18, 0.16, 0.104]
     t = [0.2, 0.2, 0.2, 0.2, 0.2, 0.2, 0.2, 0.2, 0.2, 0.2]
+    t = 0.08*MAC*np.ones(len(chords))
     # t = 0.1*chords
 
     # Camber for each section (ct in my case)
@@ -113,7 +114,7 @@ if Polars == True:
 
             # Definition of the thickness distribution for the refined mesh
             thicc = np.array([])
-            for i in range(9):
+            for i in range(Segments-1):
                 temp = np.linspace(t[i],t[i+1],N_split+1)
                 temp1 = []
                 for a in range(len(temp)-1):
@@ -143,7 +144,7 @@ if Polars == True:
             Fmag, Gamma,aero_coeffs = VSM.solve_lifting_line_system_matrix_approach_semiinfinite(
                 ringvec, controlpoints, rings,Uinf,data_airf,conv_crit,model)
             #%OUTPUT Results
-            F_rel,F_gl,Ltot,Dtot,CL,CD = VSM.output_results(Fmag,aero_coeffs,ringvec,Uinf,controlpoints,Atot)
+            F_rel,F_gl,Ltot,Dtot,CL,CD,Lift = VSM.output_results(Fmag,aero_coeffs,ringvec,Uinf,controlpoints,Atot)
 
             print(angle, CL,CD)
 

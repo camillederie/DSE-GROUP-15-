@@ -1,0 +1,45 @@
+#Calculation total drag and L/D
+CDk_out_average = 0.08848040397943571
+#CDk_out_average = 0.09161433177392729
+    #(0.0680666070465378 + 0.0708189545588898 + 0.07368529349643743 + 0.07664359776408038 + 0.07975026485174914 + 0.08296940287296334 + 0.08628540435437052 + 0.0897002100448581 + 0.09322391446671986 + 0.09683499410160512 + 0.10052675847801079 + 0.10430272162043801 + 0.10814328219044862 + 0.11205856341219432 + 0.11603457839703184)/15
+#print(CDk_out_average)
+CLk_out_average = 1.0717330210843556
+#CLk_out_average = 1.0620763008040048
+    #(0.7866300352427177 + 0.8277074316672027 + 0.8683931544477259 + 0.9088546487034929 + 0.9483561077023258 + 0.9872593657155544 + 1.0257751443835812 + 1.06360703809055 + 1.1004726127345403 + 1.1368451170668954 + 1.1725253066135963 + 1.2070383715616966 + 1.2410507721643405 + 1.274131825234634 + 1.3058466753264462)/15
+#print(CLk_out_average)
+CDk_in_average = 0.04753277258706178
+#CDk_in_average = 0.04741216072510694
+    #(0.052305207812147037 + 0.050710636262496396 + 0.04926570449428316 + 0.04797913859604247 + 0.04691889781818829 + 0.04608581242328528+ 0.045392656019302584+ 0.04485035858231958+ 0.04456752818120927+ 0.044476038266958215+ 0.044517032444829366)/10
+#print(CDk_in_average)
+
+#inputs
+CL_out = CLk_out_average
+CL_in = 0.2
+CDk_in = CDk_in_average #drag coefficient kite during reel-in [-]
+CDk_out = CDk_out_average #drag coefficient kite during reel-in [-]
+CDc = 1.1 #tether drag coefficient
+
+
+#tether parameters
+dt = 0.0044367 #tether diameter [m]
+lt = 580 #tether length [m]
+S = 16.65 #projected area [m^2]
+
+#formulas
+CDt = 1/4 * dt*lt/S * CDc
+print(CDt)
+CDkcu_in = 0.1*(CDt+CDk_in)
+CDkcu_out = 0.1*(CDt+CDk_out)
+
+CD_total_in = CDk_in + CDt + CDkcu_in
+CD_total_out = CDk_out + CDt + CDkcu_out
+
+LD_out = CL_out/CD_total_out
+LD_in = CL_in/CD_total_out
+
+print(CLk_out_average)
+print(CD_total_out)
+print(CD_total_in)
+#print(LD_out)
+#print(LD_in)
+
