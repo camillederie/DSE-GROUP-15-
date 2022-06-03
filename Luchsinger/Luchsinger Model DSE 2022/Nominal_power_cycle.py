@@ -105,6 +105,8 @@ def calculate_opt_gamma_nominal_elev(data):
     
     return data, plot_gamma_data
 
+### This function finds the optimal gamma in when a fixed gamma out is set ###
+
 def calculate_opt_gamma_in(data):
 
     plot_gamma_data = {}
@@ -148,6 +150,8 @@ def calculate_opt_gamma_in(data):
     
     return data
 
+### This function plots the Power for gamma in and out combinations ###
+
 def plot_gamma_power(data_plot):
     plot_data = data_plot
     hsv_modified = cm.get_cmap('hsv', 256)# create new hsv colormaps in range of 0.3 (green) to 0.7 (blue)
@@ -167,6 +171,8 @@ def calculate_nominal_tractionF(data):
     data['T_in_elev_n'] =  0.5*data['rho']*data['v_w_n']**2*data['A_proj']*(1+2*data['gamma_in_n']*np.cos(data['a_elev_in'])+data['gamma_in_n']**2)*data['F_in']
 
     return data
+
+### This function calculates the powers during all phases of the power cycle ###
 
 def calculate_nominal_powers(data):
 
@@ -199,11 +205,15 @@ def calculate_nominal_powers(data):
     
     return data
 
+### This function updates the projected area based on the average power requirement ###
+
 def calculate_updated_projected_area(data):
     
     data['A_proj_u'] =  data['P_avg_e_req']/ data['P_w']/((data['eff_out']*data['F_out']*(np.cos(data['a_elev_out'])-data['gamma_out_n'])**2-(data['F_in']*(data['gamma_in_n']**2+2*np.cos(data['a_elev_in'])*data['gamma_in_n']+1))/data['eff_in'])*(( data['gamma_out_n']* data['gamma_in_n'])/( data['gamma_out_n']+ data['gamma_in_n'])))
-    print(data['A_proj_u'])
+    #print(data['A_proj_u'])
     return data
+
+### This function calculates the cycle times ###
 
 def calculate_cycle_param(data):
 
@@ -213,13 +223,17 @@ def calculate_cycle_param(data):
 
     return data
 
+### This function looks for gamma outs to lower the traction force, and directly updates the area accordingly
 def evaluate_tether_force(data): 
      
-    data['gamma_out_init'] = data['gamma_out_n']
+    data['gamma_out_n_init'] = data['gamma_out_n']
+    data['gamma_in_n_init'] = data['gamma_in_n']
     data['A_proj_init'] = data['A_proj']
+
     TF_an = {'gamma_out':[],'force': [],'area':[]}
     while data['gamma_out_n'] < .6:
         data['gamma_out_n'] += 0.01
+        data = calculate_opt_gamma_in(data)
         data = calculate_updated_projected_area(data)
         data['A_proj'] = data['A_proj_u']
 
@@ -229,12 +243,23 @@ def evaluate_tether_force(data):
         TF_an['force'].append(data['T_out_elev_n'])
         TF_an['area'].append(data['A_proj'])
 
+    plot_TF_an(TF_an)
+    #data['gamma_out_n'] 
+    data['gamma_out_n'] = 0.43#float(input('Enter the chosen gamma reel-out to find the correspinding optimal gamma reel-in: '))
+    data = calculate_opt_gamma_in(data)
+    data = calculate_updated_projected_area(data)
+    data['A_proj'] = data['A_proj_u']
+    data['gamma_out_n'] = np.cos(data['a_elev_out']) - np.sqrt(data['T_out_target']*2/(data['rho']*data['v_w_n']**2*data['A_proj']*data['F_out']))
+    data = calculate_opt_gamma_in(data)
+    data = calculate_updated_projected_area(data)
+    data['A_proj'] = data['A_proj_u']
+    data = calculate_nominal_tractionF(data)
+    data = calculate_nominal_powers(data)
     
-    return TF_an
+    return data
 
-def evaluate_adj_wind_areafix(v_w_adj):
+def evaluate_adj_wind_areafix(data,v_w_adj):
     data['gamma_out_v_w_adj'] = np.cos(data['a_elev_out']) - np.sqrt(10329/(0.5*data['rho']*v_w_adj**2*data['A_proj']*data['F_out']))
-    
     return data
          
 def plot_TF_an(TF_an):
@@ -248,6 +273,8 @@ def plot_TF_an(TF_an):
     plt.grid()
     plt.show()
 
+### This function calculates the apparent and kite cross wind speed required ###
+
 def calculate_apparent_speed(data):
     v_out = data['v_w_n']*data['gamma_out_n']
     v_in  = data['v_w_n']*data['gamma_in_n']
@@ -258,6 +285,7 @@ def calculate_apparent_speed(data):
     data['v_kc'] = np.sqrt(-(v_w**2-2*v_w*v_out*np.cos(data['a_elev_out'])+v_out**2-data['v_a_out']**2))
     return data
 
+### Size Power Components ###
 def size_supercap(data):
 
     data['E_out'] = data['P_out_e_elev']*data['t_out'] *0.000277777778
@@ -275,7 +303,7 @@ def size_generator(data):
     data['GR_motor'] = data['rpm_n_in']/data['rpm_motor']
 
 
-    data = evaluate_adj_wind_areafix(data['v_w_adj'])
+    data = evaluate_adj_wind_areafix(data,data['v_w_adj'])
     v_r_out = data['gamma_out_v_w_adj']*data['v_w_adj']
     rpm_max = np.ones(len(v_r_out))*data['rpm_max']
     
@@ -296,11 +324,9 @@ def size_generator(data):
     
     plt.show()
 
-
-
     return data
     
-
+### Do Analysis ###
 def run_nominal_analysis(data):
     ip = 1
     #ip = int(input('Enter 1 if you want to take the tether elevation into account for finding the optimal reeling speeds, 0 for ignoring it: '))
@@ -345,19 +371,7 @@ def run_nominal_analysis(data):
     return data
 
 def run_TF_anal(data):
-    TF_an = evaluate_tether_force(data)
-    #print(TF_an)
-    plot_TF_an(TF_an)
-    data['gamma_out_n'] = 0.43#float(input('Enter the chosen gamma reel-out to find the correspinding optimal gamma reel-in: '))
-    data['gamma_in_n_init'] = data['gamma_in_n']
-    data = calculate_updated_projected_area(data)
-    data['A_proj'] = data['A_proj_u']
-    data = calculate_opt_gamma_in(data)
-    print(data['gamma_in_n'])
-    data = calculate_nominal_tractionF(data)
-    data = calculate_updated_projected_area(data)
-    data['A_proj'] = data['A_proj_u']
-    data = calculate_nominal_powers(data)
+    data = evaluate_tether_force(data)
     data = calculate_apparent_speed(data)
     data = size_supercap(data)
     data = size_generator(data)
@@ -370,18 +384,7 @@ def run_TF_anal(data):
     print('The extended results of the analysis can be found in the data file added to the directory.')
 
 
-# def run_TF_anal_wo_areaupdate(data):   
-#     TF_an = evaluate_tether_force(data)
-#     #plot_TF_an(TF_an)
-#     data['gamma_out_n'] = float(input('Enter the chosen gamma reel-out to find the correspinding optimal gamma reel-in: '))
-#     data = calculate_opt_gamma_in(data)
-    
-#     data = size_generator(data)
-#     print(data['rpm'], data['G_power'],data['v_w_adj'],data['gamma_out_adj'],)
-#     return data
-
-data = get_initial_data()
-data = run_nominal_analysis(data)  
+data = run_nominal_analysis(get_initial_data())  
 
 
 
