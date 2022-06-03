@@ -1,5 +1,5 @@
 
-#from InputV2 import *
+from Luchsinger.luchsingermodel.InputV2 import *
 import numpy as np 
 from matplotlib import cm
 from matplotlib.colors import ListedColormap,LinearSegmentedColormap
