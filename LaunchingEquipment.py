@@ -5,9 +5,9 @@ angle_kite_ground = pi / 4
 Cd = 0.9  # -, drag coefficient of an angled plate
 rho = 1.225  # kg/m^3, air density
 friction_coefficient = 0.5  # minimum ground coefficient coming from anchoring
-S = 20  # m^2, surface area of the kite
-c = 2  # m, chord length in middle = largest
-kite_mass = 6  # kg, mass of kite only
+S = 20.  # m^2, surface area of the kite
+c = 2.  # m, chord length in middle = largest
+kite_mass = 6.  # kg, mass of kite only
 g = 9.81  # gravitational constant
 
 def launching_equipment_info(vw_ground, friction_coefficient, S, c, kite_mass):
@@ -25,7 +25,8 @@ def launching_equipment_info(vw_ground, friction_coefficient, S, c, kite_mass):
     F_tension = Fclamp + 0.5 *Fwind
     """
 
-    F_clamp = (F_wind/2 + friction_coefficient * kite_mass*g)/(1+friction_coefficient)
+    F_clamp = (F_wind/2 + friction_coefficient * kite_mass * g)/ (1+friction_coefficient)
+
     print(f'The downforce that needs to be provided by the launching equipment is {F_clamp} N \n'
           f'This means a weight of at least {F_clamp/g} kg of the launching equipment.')
 

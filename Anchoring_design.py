@@ -87,7 +87,7 @@ def anchoring_info(Kite_f, Riv_w, road_angle, min_kite_angle, max_kite_angle, re
     print(f"Tilting over vertical axis: Stationary: {stationary_bol_vert}, with minimal normal force = {min_tireforce_vert} N")
     print(f"Tilting over longitudinal axis: Stationary: {stationary_bol_long}, with minimal normal force = {min_tireforce_long} N")
 
-    return req_fric_coeff, sliding_d*1000 #, stationary_bol_vert, min_tireforce_vert, stationary_bol_long, min_tireforce_long
+    return req_fr_coeff, sliding_d*1000 #, stationary_bol_vert, min_tireforce_vert, stationary_bol_long, min_tireforce_long
 
 if __name__ == "__main__":
     anchoring_info(Kite_f, Riv_w, road_angle, min_kite_angle, max_kite_angle, ref_kin_fric_coeff, force_duration)
