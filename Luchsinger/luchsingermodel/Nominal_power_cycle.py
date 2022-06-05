@@ -58,7 +58,7 @@ def calculate_opt_gamma_nominal_elev(data):
     if data['max_reel_speed'] <= 2*data['v_w_n']: 
         lim = data['max_reel_speed']/data['v_w_n']
     else:
-        lim = 2.0
+        lim = 2.5
     
     plot_gamma_data['gamma_in']  = np.linspace(0.01,lim,100)
     plot_gamma_data['gamma_out'] = np.linspace(0.01,1,100)
@@ -114,7 +114,7 @@ def calculate_opt_gamma_in(data):
     if data['max_reel_speed'] <= 2*data['v_w_n']: 
         lim = data['max_reel_speed']/data['v_w_n']
     else:
-        lim = 2
+        lim = 2.5
     
     plot_gamma_data['gamma_in']  = np.linspace(0.01,lim,100)
     #plot_gamma_data['gamma_out'] = np.linspace(0.01,1,100)
@@ -258,7 +258,7 @@ def evaluate_tether_force(data):
     return data
 
 def evaluate_adj_wind_areafix(data,v_w_adj):
-    data['gamma_out_v_w_adj'] = np.cos(data['a_elev_out']) - np.sqrt(10600/(0.5*data['rho']*v_w_adj**2*data['A_proj']*data['F_out']))
+    data['gamma_out_v_w_adj'] = np.cos(data['a_elev_out']) - np.sqrt(data['T_out_elev_n']/(0.5*data['rho']*v_w_adj**2*data['A_proj']*data['F_out']))
     return data
          
 def plot_TF_an(TF_an):
