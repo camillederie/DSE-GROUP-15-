@@ -51,27 +51,27 @@ def long_axis_tilting(force,kite_angle,road_angle,weight,wheels_dist_width,dist_
     else:
         return False, min(left_tire_force_lst)
 
-if __name__ == "__main__":
+#Inputs
+Riv_w = 3692
+Kite_f_without_sf = 10329.32
+Safety_f = 1.2
+Kite_f = Kite_f_without_sf * Safety_f
 
-    #Inputs 
-    Riv_w = 3692 
-    Kite_f_without_sf = 10329.32
-    Safety_f = 1.2
-    Kite_f = Kite_f_without_sf * Safety_f
+ref_kin_fric_coeff = 0.35
+force_duration = 0.1
 
-    ref_kin_fric_coeff = 0.35
-    force_duration = 0.1
+min_kite_angle = 25
+max_kite_angle = 35
+road_angle = 2
 
-    min_kite_angle = 25
-    max_kite_angle = 35
-    road_angle = 2
 
+def anchoring_info(Kite_f, Riv_w, road_angle, min_kite_angle, max_kite_angle, ref_kin_fric_coeff, force_duration):
     loc_cg = 1.536
     wheels_dist_len = 3.43
-    height_riv = 1.83 
+    height_riv = 1.83
     dist_drum_cg = 0.7
     dist_cg_ground = 0.4
-    wheels_dist_width = 1.9 
+    wheels_dist_width = 1.9
 
     #Sliding
     req_fr_coeff, alfa_extr, beta_extr = req_fric_coeff(road_angle,[min_kite_angle,max_kite_angle],Riv_w,Kite_f)
@@ -87,3 +87,7 @@ if __name__ == "__main__":
     print(f"Tilting over vertical axis: Stationary: {stationary_bol_vert}, with minimal normal force = {min_tireforce_vert} N")
     print(f"Tilting over longitudinal axis: Stationary: {stationary_bol_long}, with minimal normal force = {min_tireforce_long} N")
 
+    return req_fric_coeff, sliding_d*1000 #, stationary_bol_vert, min_tireforce_vert, stationary_bol_long, min_tireforce_long
+
+if __name__ == "__main__":
+    anchoring_info(Kite_f, Riv_w, road_angle, min_kite_angle, max_kite_angle, ref_kin_fric_coeff, force_duration)
