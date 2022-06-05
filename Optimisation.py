@@ -87,7 +87,7 @@ print(data)
 # gamma_in = data['gamma_in_n']
 
 
-#a
+#
 ## STRUCTURES ##
 #DEFINITIONS
 len_drum = 1.10
