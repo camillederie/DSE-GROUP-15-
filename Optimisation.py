@@ -18,14 +18,20 @@ TAS = 32.5
 
 A_proj_last = 0
 c=0
-area_diff = 0.01
+area_diff = 0.001
 while abs(A_proj_last-A_proj) > area_diff:
+    
+    A_proj_t = A_proj_last
     A_proj_last = A_proj
+    if c>0:
+        A_proj = (A_proj_t+A_proj)/2
+    
     c+= 1
+
     print('Hey Bradda, the optimisation has started. Leggo! This is cycle: ',c)
     ## AERO ##
     print('Aero started')
-    CL_average_out, CD_average_out, CL3_CD2_average_out, CD_average_in, A_proj, Strut_area_av = main_aero_function(A_proj_last, Points, Kite_segments, N_split, AoA_range_out, AoA_range_in, TAS, Print=False)
+    CL_average_out, CD_average_out, CL3_CD2_average_out, CD_average_in, A_proj, Strut_area_av = main_aero_function(A_proj, Points, Kite_segments, N_split, AoA_range_out, AoA_range_in, TAS, Print=False)
     # CL_average_in, CD_average_in, CL3_CD2_average_in, A_proj, Strut_area_av = main_aero_function(A_proj, Points, Kite_segments, N_split, AoA_range_in, TAS, Print=False)
     print('Aero part finished')
     ## POWER ##

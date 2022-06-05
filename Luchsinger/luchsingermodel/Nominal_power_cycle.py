@@ -114,7 +114,7 @@ def calculate_opt_gamma_in(data):
     if data['max_reel_speed'] <= 2*data['v_w_n']: 
         lim = data['max_reel_speed']/data['v_w_n']
     else:
-        lim = 3
+        lim = 2
     
     plot_gamma_data['gamma_in']  = np.linspace(0.01,lim,100)
     #plot_gamma_data['gamma_out'] = np.linspace(0.01,1,100)
@@ -209,7 +209,7 @@ def calculate_nominal_powers(data):
 def calculate_updated_projected_area(data):
     
     data['A_proj_u'] =  data['P_avg_e_req']/ data['P_w']/((data['eff_out']*data['F_out']*(np.cos(data['a_elev_out'])-data['gamma_out_n'])**2-(data['F_in']*(data['gamma_in_n']**2+2*np.cos(data['a_elev_in'])*data['gamma_in_n']+1))/data['eff_in'])*(( data['gamma_out_n']* data['gamma_in_n'])/( data['gamma_out_n']+ data['gamma_in_n'])))
-    #print(data['A_proj_u'])
+    data['A_proj']= data['A_proj_u']
     return data
 
 ### This function calculates the cycle times ###
@@ -258,7 +258,7 @@ def evaluate_tether_force(data):
     return data
 
 def evaluate_adj_wind_areafix(data,v_w_adj):
-    data['gamma_out_v_w_adj'] = np.cos(data['a_elev_out']) - np.sqrt(10329/(0.5*data['rho']*v_w_adj**2*data['A_proj']*data['F_out']))
+    data['gamma_out_v_w_adj'] = np.cos(data['a_elev_out']) - np.sqrt(10600/(0.5*data['rho']*v_w_adj**2*data['A_proj']*data['F_out']))
     return data
          
 def plot_TF_an(TF_an):
@@ -345,6 +345,9 @@ def run_nominal_analysis(data):
         print('The projected area of the kite should be iterated on!')
     else: 
         print('The area of the kite is optimal for the required power output.')
+    
+    data = calculate_nominal_tractionF(data)
+    data = calculate_nominal_powers(data)
     data = calculate_cycle_param(data)
     
     #plot_gamma_power(data_plot)
