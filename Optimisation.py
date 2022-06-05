@@ -6,7 +6,7 @@ from Luchsinger.luchsingermodel.Nominal_power_cycle import  run_nominal_analysis
 from Luchsinger.luchsingermodel.InputV2 import get_initial_data
 from Aero.aero_main_function import main_aero_function
 
-A_proj = 14.67
+A_proj = 14.55
 Points = 1000000
 Kite_segments = 12
 N_split = 5
