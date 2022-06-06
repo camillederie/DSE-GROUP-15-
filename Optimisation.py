@@ -8,14 +8,14 @@ from Aero.aero_main_function import main_aero_function
 from Anchoring_design import anchoring_info
 from LaunchingEquipment import launching_equipment_info
 
-A_proj = 14.29
+A_proj = 14.4
 Points = 1000000
 Kite_segments = 12
 N_split = 5
 AoA_range_out = np.arange(8, 15.5, 0.5)
 AoA_range_in = np.arange(-1, 3.5, 0.5)
 TAS = 32.5
-area_diff = 10
+area_diff = 0.001
 
 def iteration_aero_power(area_diff, A_proj, TAS):
     Points = 1000
@@ -28,12 +28,16 @@ def iteration_aero_power(area_diff, A_proj, TAS):
     c = 0
 
     while abs(A_proj_last-A_proj) > area_diff:
+        A_proj_t = A_proj_last
         A_proj_last = A_proj
+        if c>0:
+            A_proj = (A_proj_t+A_proj)/2
+    
         c+= 1
         print('Hey Bradda, the optimisation has started. Leggo! This is cycle: ',c)
         ## AERO ##
         print('Aero started')
-        CL_average_out, CD_average_out, CL3_CD2_average_out, CD_average_in, A_proj, Strut_area_av, flat_area, flat_area_span, chords = main_aero_function(A_proj_last, Points, Kite_segments, N_split, AoA_range_out, AoA_range_in, TAS, Print=False)
+        CL_average_out, CD_average_out, CL3_CD2_average_out, CD_average_in, A_proj, Strut_area_av, flat_area, flat_area_span, chords = main_aero_function(A_proj, Points, Kite_segments, N_split, AoA_range_out, AoA_range_in, TAS, Print=False)
         # CL_average_in, CD_average_in, CL3_CD2_average_in, A_proj, Strut_area_av, flat_area, flat_area_span, chords = main_aero_function(A_proj, Points, Kite_segments, N_split, AoA_range_in, TAS, Print=False)
         print('Aero part finished')
         ## POWER ##
@@ -64,7 +68,7 @@ def iteration_aero_power(area_diff, A_proj, TAS):
 
     return data
 
-# data = iteration_aero_power(area_diff, A_proj, TAS)
+data = iteration_aero_power(area_diff, A_proj, TAS)
 
 # Open Data
 file = open("data_optim.txt")
@@ -93,48 +97,48 @@ print(data)
 
 
 
-A_proj_last = 0
-c=0
-area_diff = 0.001
-while abs(A_proj_last-A_proj) > area_diff:
+# A_proj_last = 0
+# c=0
+# area_diff = 0.001
+# while abs(A_proj_last-A_proj) > area_diff:
     
-    A_proj_t = A_proj_last
-    A_proj_last = A_proj
-    if c>0:
-        A_proj = (A_proj_t+A_proj)/2
+#     A_proj_t = A_proj_last
+#     A_proj_last = A_proj
+#     if c>0:
+#         A_proj = (A_proj_t+A_proj)/2
     
-    c+= 1
+#     c+= 1
 
-    print('Hey Bradda, the optimisation has started. Leggo! This is cycle: ',c)
-    ## AERO ##
-    print('Aero started')
-    CL_average_out, CD_average_out, CL3_CD2_average_out, CD_average_in, A_proj, Strut_area_av = main_aero_function(A_proj, Points, Kite_segments, N_split, AoA_range_out, AoA_range_in, TAS, Print=False)
-    # CL_average_in, CD_average_in, CL3_CD2_average_in, A_proj, Strut_area_av = main_aero_function(A_proj, Points, Kite_segments, N_split, AoA_range_in, TAS, Print=False)
-    print('Aero part finished')
-    ## POWER ##
-    data = get_initial_data()
-    data['F_out'] = CL3_CD2_average_out
-    data['F_in'] = CD_average_in
-    data['CL_out'] = CL_average_out
-    data['CD_out'] = CD_average_out
-    # data['CL_in'] = CL_average_in
-    data['CD_in'] = CD_average_in
-    data =  run_nominal_analysis(data) 
-    A_proj = data['A_proj']
-    T_F_out = data['T_out_elev_n']
-    TAS = data['v_a_out']
-    gamma_out = data['gamma_out_n']
-    gamma_in = data['gamma_in_n']
-    print('Power part finished, the old area was: ', A_proj_last, 'The new one is:', A_proj)
-    ## STRUCTURES ##
+#     print('Hey Bradda, the optimisation has started. Leggo! This is cycle: ',c)
+#     ## AERO ##
+#     print('Aero started')
+#     CL_average_out, CD_average_out, CL3_CD2_average_out, CD_average_in, A_proj, Strut_area_av = main_aero_function(A_proj, Points, Kite_segments, N_split, AoA_range_out, AoA_range_in, TAS, Print=False)
+#     # CL_average_in, CD_average_in, CL3_CD2_average_in, A_proj, Strut_area_av = main_aero_function(A_proj, Points, Kite_segments, N_split, AoA_range_in, TAS, Print=False)
+#     print('Aero part finished')
+#     ## POWER ##
+#     data = get_initial_data()
+#     data['F_out'] = CL3_CD2_average_out
+#     data['F_in'] = CD_average_in
+#     data['CL_out'] = CL_average_out
+#     data['CD_out'] = CD_average_out
+#     # data['CL_in'] = CL_average_in
+#     data['CD_in'] = CD_average_in
+#     data =  run_nominal_analysis(data) 
+#     A_proj = data['A_proj']
+#     T_F_out = data['T_out_elev_n']
+#     TAS = data['v_a_out']
+#     gamma_out = data['gamma_out_n']
+#     gamma_in = data['gamma_in_n']
+#     print('Power part finished, the old area was: ', A_proj_last, 'The new one is:', A_proj)
+#     ## STRUCTURES ##
 
-print('Optimisation completed!')
-# Write to file #
-file = open("data_optim.txt","w") 
-for key, value in data.items(): 
-    file.write('%s:%s\n' % (key, value))
-file.close()
-print('The extended results of the analysis can be found in the data file added to the directory.')
+# print('Optimisation completed!')
+# # Write to file #
+# file = open("data_optim.txt","w") 
+# for key, value in data.items(): 
+#     file.write('%s:%s\n' % (key, value))
+# file.close()
+# print('The extended results of the analysis can be found in the data file added to the directory.')
     
 #DEFINITIONS
 len_drum = 1.10

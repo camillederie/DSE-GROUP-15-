@@ -1,5 +1,5 @@
 
-from InputV2 import *
+from Luchsinger.luchsingermodel.InputV2 import *
 import numpy as np 
 from matplotlib import cm
 from matplotlib.colors import ListedColormap,LinearSegmentedColormap
@@ -247,16 +247,16 @@ def evaluate_tether_force(data):
         TF_an['force'].append(data['T_out_elev_n'])
         TF_an['area'].append(data['A_proj'])
 
-    plot_TF_an(TF_an)
+    #plot_TF_an(TF_an)
     #data['gamma_out_n'] 
     data['gamma_out_n'] = 0.43#float(input('Enter the chosen gamma reel-out to find the correspinding optimal gamma reel-in: '))
     data = calculate_opt_gamma_in(data)
     data = calculate_updated_projected_area(data)
     data['A_proj'] = data['A_proj_u']
-    #data['gamma_out_n'] = np.cos(data['a_elev_out']) - np.sqrt(data['T_out_target']*2/(data['rho']*data['v_w_n']**2*data['A_proj']*data['F_out']))
-    #data = calculate_opt_gamma_in(data)
-    #data = calculate_updated_projected_area(data)
-    #data['A_proj'] = data['A_proj_u']
+    data['gamma_out_n'] = np.cos(data['a_elev_out']) - np.sqrt(data['T_out_target']*2/(data['rho']*data['v_w_n']**2*data['A_proj']*data['F_out']))
+    data = calculate_opt_gamma_in(data)
+    data = calculate_updated_projected_area(data)
+    data['A_proj'] = data['A_proj_u']
     data = calculate_nominal_tractionF(data)
     data = calculate_nominal_powers(data)
     
@@ -355,7 +355,7 @@ def run_nominal_analysis(data):
     data = calculate_nominal_powers(data)
     data = calculate_cycle_param(data)
     
-    plot_gamma_power(data_plot)
+    #plot_gamma_power(data_plot)
 
 
     # Write to file #
@@ -392,7 +392,7 @@ def run_TF_anal(data):
     print('The extended results of the analysis can be found in the data file added to the directory.')
 
 #data = get_initial_data()
-data = run_nominal_analysis(get_initial_data())  
+#data = run_nominal_analysis(get_initial_data())  
 
 
 
