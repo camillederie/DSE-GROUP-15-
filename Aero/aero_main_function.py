@@ -230,9 +230,13 @@ def main_aero_function(A_proj, Points, Kite_segments, N_split, AoA_range_out, Ao
         CD_in.append(CD)
         CL_in.append(CL)
 
+    if tether == True:
+        CDt = 1 / 4 * dt * lt / Atot * CDc
+        CD_in = 1.1 * (np.array(CD_in) + CDt)
+
     CD_in = np.average(np.array(CD_in))
     print('Aero Analysis Completed')
     return CL_average, CD_average, CL3_CD2_average, CD_in, A_proj, Strut_area_av, flat_area, flat_area_span, chords
 
-# a,b,c,d,e,f = main_aero_function(16.65, 1000000, 12, 5, np.arange(8, 15.5, 0.5), np.arange(-1, 3.5, 0.5), 32.5, False)
+# a,b,c,d,e,f,g,h,i = main_aero_function(14.39, 1000000, 12, 5, np.arange(8, 15.5, 0.5), np.arange(-1, 3.5, 0.5), 32.5, False)
 # print(a, b, c, d)
