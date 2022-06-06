@@ -354,6 +354,8 @@ def run_nominal_analysis(data):
     data = calculate_nominal_tractionF(data)
     data = calculate_nominal_powers(data)
     data = calculate_cycle_param(data)
+    data = calculate_apparent_speed(data)
+    data = size_supercap(data)
     
     #plot_gamma_power(data_plot)
 
@@ -391,8 +393,8 @@ def run_TF_anal(data):
     file.close()
     print('The extended results of the analysis can be found in the data file added to the directory.')
 
-#data = get_initial_data()
-#data = run_nominal_analysis(get_initial_data())  
+data = get_initial_data()
+data = run_nominal_analysis(get_initial_data())  
 
 
 

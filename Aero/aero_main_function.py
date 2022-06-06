@@ -30,7 +30,7 @@ def main_aero_function(A_proj, Points, Kite_segments, N_split, AoA_range_out, Ao
     coords, chords, MAC, arclength, flat_area, flat_area_span = CGEN.Generate_Kite15_coords(Atot, Segments, Points, Plotting, Bridles, Print)
     # coords = VSM.struct2aero_geometry(CAD)  # Change geometry to definition
     N = int(len(coords) / 2)  # Number of sections defined
-    dt = 0.0044367   # m
+    dt = 0.0045   # m
     lt = 580        # m
     CDc = 1.1       # -
 
