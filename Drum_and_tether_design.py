@@ -191,6 +191,24 @@ def structures_calculation(kite_area_in, avg_strut_in, len_drum_in, angle_in, ex
     #print(brid_lst)
 
     #OUTPUTS
+    Len_drum = len_drum_in
+    D_drum = d_drum
+    Total_factor = total_SSL_factors(reel_out_perc)
+    Load = round(tension(nom_load, diam)/10**6, 3)
+    Tether_diameter= (diam)
+    Tether_density = 1/((diam/2)**2*pi)/100
+    Tether_mass = (tether_list[2][2])*6.55
+    Tether_volume = (tet_len_reel_out_end+extra_len)*(diam/2)**2*pi
+    #ALUULA weight = get_equation(lstm2, lstAL)(30)}{" kg"}')
+    #Dacron weight = get_equation(lstm2, lstDA)(30)}{" kg"}')
+
+    Kite_weight_Teijin = total_weight(kite_area, DA_weight, extrapolation_perc(kite_area))
+    Kite_weight_ALUULA = kite_mass_margin *(total_weight(kite_area, DA_weight, extrapolation_perc(kite_area))+ canopy_weight(kite_area, AL_weight)[0]-canopy_weight(kite_area, DA_weight)[0])
+    Canopy_weight = canopy_weight(kite_area, AL_weight)[0]
+    Airframe_mass = total_weight(kite_area, DA_weight, extrapolation_perc(kite_area))+ canopy_weight(kite_area, AL_weight)[0]-canopy_weight(kite_area, DA_weight)[0]-canopy_weight(kite_area, AL_weight)[0]
+    Valve_reinforcement_mass = (((total_weight(kite_area, DA_weight, extrapolation_perc(kite_area))+ canopy_weight(kite_area, AL_weight)[0]-canopy_weight(kite_area, DA_weight)[0]-canopy_weight(kite_area, AL_weight)[0])/AL_weight)-25)*AL_weight
+
+    #Print OUTPUTS
     print(f'{"Len_drum = "}{len_drum_in}{" m"}')
     print(f'{"D_drum = "}{d_drum}{" m"}')
     print(f'{"Total factor = "}{total_SSL_factors(reel_out_perc)}{" [-]"}')
@@ -213,6 +231,7 @@ def structures_calculation(kite_area_in, avg_strut_in, len_drum_in, angle_in, ex
     The extrapolation is based on a Teijin D2 54 gsm canopy and a full ALUULA airframe. To make the system fully ALUULA, the weight of the canopy is subtracted and the weight of an ALUULA canopy is added.
     Using an averaged value of the surface of all struts (0.687 m\textsuperscript{2}), a single strut can be added to the system to approximate the weight. This weight is multiplied by a safety factor of 2, because the strut is thicker than the canopy. A 5% margin on the weight will be taken, to keep possible inaccuracies of the used data into account.
     The total weight and the individual contributions of the canopy and the airframe can be seen in ... ."""
-    return
+    return Kite_weight_ALUULA, Tether_diameter, Tether_mass, Load, D_drum
+
 if __name__ == "__main__":
     structures_calculation(kite_area_in, avg_strut_in, len_drum_in, angle_in, extra_len_in, nom_load_in, saf_fac_in, kite_mass_margin, t_out, t_in)

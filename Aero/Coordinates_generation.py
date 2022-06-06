@@ -234,7 +234,7 @@ def Generate_Kite15_coords(Projected_area,segments, Points_no, Plotting, Bridles
         plt.legend()
 
         plt.show()
-    return coord, chords, MAC_1, arclength
+    return coord, chords, MAC_1, arclength, flat_area, flat_area_span
 
 
 if __name__ == "__main__":
@@ -245,4 +245,4 @@ if __name__ == "__main__":
     Bridles = False
     Print = False
     Points = 100000
-    coord, chords, MAC, arclength = Generate_Kite15_coords(A_proj, segments, Points, plotting, Bridles, Print)
+    flat_area, flat_area_span, coord, chords, MAC, arclength = Generate_Kite15_coords(A_proj, segments, Points, plotting, Bridles, Print)

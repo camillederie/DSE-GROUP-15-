@@ -27,7 +27,7 @@ def main_aero_function(A_proj, Points, Kite_segments, N_split, AoA_range_out, Ao
     Plotting = False
     Bridles = False
     # CAD = VSM.get_Kite15_coords()  # Geometry nodes locations
-    coords, chords, MAC, arclength = CGEN.Generate_Kite15_coords(Atot, Segments, Points, Plotting, Bridles, Print)
+    coords, chords, MAC, arclength, flat_area, flat_area_span = CGEN.Generate_Kite15_coords(Atot, Segments, Points, Plotting, Bridles, Print)
     # coords = VSM.struct2aero_geometry(CAD)  # Change geometry to definition
     N = int(len(coords) / 2)  # Number of sections defined
     dt = 0.0044367   # m
@@ -232,7 +232,7 @@ def main_aero_function(A_proj, Points, Kite_segments, N_split, AoA_range_out, Ao
 
     CD_in = np.average(np.array(CD_in))
     print('Aero Analysis Completed')
-    return CL_average, CD_average, CL3_CD2_average, CD_in, A_proj, Strut_area_av
+    return CL_average, CD_average, CL3_CD2_average, CD_in, A_proj, Strut_area_av, flat_area, flat_area_span, chords
 
 # a,b,c,d,e,f = main_aero_function(16.65, 1000000, 12, 5, np.arange(8, 15.5, 0.5), np.arange(-1, 3.5, 0.5), 32.5, False)
 # print(a, b, c, d)
