@@ -49,7 +49,7 @@ def structures_calculation(kite_area_in, avg_strut_in, len_drum_in, angle_in, ex
 
             len_drum = 1.10 #Fixed width instead of max(len_drum_oper,len_drum_start)
             if len_drum_oper< len_drum_start:
-                print("Operation drum length is too short",len_drum_oper-len_drum_start)
+                print("Operation drum length is too short",len_drum_oper-len_drum_start, "m.")
             elif len_drum_oper == len_drum_start:
                 print("Operation drum length is equal to starting phase")
             else:
@@ -58,11 +58,11 @@ def structures_calculation(kite_area_in, avg_strut_in, len_drum_in, angle_in, ex
             winds = ceil((max_tet_len[1]+extra_len)/(pi*drum_diam_oper))
             len_drum = (saf_marg + tether_d)*winds
 
-        return len_drum, drum_diam_oper
+        return len_drum, drum_diam_oper, max_tet_len[0], max_tet_len[1]
 
     def drum_sizing_fixed_len(double_winding, angle, oper_range, tether_d, saf_marg, len_drum, extra_len):
         # general calculations for drum sizing
-        height = sin(radians(angle))
+        height = sin(angle)
         max_tet_len = np.array(oper_range) / height
         # specific parts for if double winded or not
         if double_winding:
@@ -72,7 +72,7 @@ def structures_calculation(kite_area_in, avg_strut_in, len_drum_in, angle_in, ex
                 drum_diam_start = (max_tet_len[0]/winds)/pi
                 drum_diam = drum_diam_start
             if max_tet_len[0] < (oper_len):
-                drum_diam_oper = (oper_len/winds)/pi
+                drum_diam_oper = (oper_len/winds)/pi + 2 * tether_d
                 drum_diam = drum_diam_oper
         dD_dT = drum_diam/tether_d
 
@@ -177,11 +177,11 @@ def structures_calculation(kite_area_in, avg_strut_in, len_drum_in, angle_in, ex
     avg_strut_A = avg_strut_in #0.6867                # m^2
 
     diam = tether_list[2][1]*10**(-3) #is this also hardcoded?
-    # len_drum, d_drum = drum_sizing(True, angle, oper_range, tether_d, saf_marg, dD_dT, extra_len)
 
+    # len_drum, d_drum, tet_len_reel_out_start, tet_len_reel_out_end = drum_sizing(True, angle, oper_range, tether_d, saf_marg, dD_dT, extra_len)
 
     d_drum, dD_dT, tet_len_reel_out_start, tet_len_reel_out_end  = drum_sizing_fixed_len(True, angle, oper_range, tether_d, saf_marg, len_drum_in, extra_len)
-
+    print('dD_dT =', dD_dT, '-' )
     #Bridle diameters
     #brid_forces = [3710.24, 2497.78, 1643.51, 1522.16, 1187.60, 1072.19, 810.32]
     #brid_lst = []
@@ -191,7 +191,7 @@ def structures_calculation(kite_area_in, avg_strut_in, len_drum_in, angle_in, ex
     #print(brid_lst)
 
     #OUTPUTS
-    Len_drum = len_drum_in
+    # Len_drum = len_drum_in
     D_drum = d_drum
     Total_factor = total_SSL_factors(reel_out_perc)
     Load = round(tension(nom_load, diam)/10**6, 3)
@@ -205,7 +205,8 @@ def structures_calculation(kite_area_in, avg_strut_in, len_drum_in, angle_in, ex
     Kite_weight_Teijin = total_weight(kite_area, DA_weight, extrapolation_perc(kite_area))
     Kite_weight_ALUULA = kite_mass_margin *(total_weight(kite_area, DA_weight, extrapolation_perc(kite_area))+ canopy_weight(kite_area, AL_weight)[0]-canopy_weight(kite_area, DA_weight)[0])
     Canopy_weight = canopy_weight(kite_area, AL_weight)[0]
-    Airframe_mass = total_weight(kite_area, DA_weight, extrapolation_perc(kite_area))+ canopy_weight(kite_area, AL_weight)[0]-canopy_weight(kite_area, DA_weight)[0]-canopy_weight(kite_area, AL_weight)[0]
+    Airframe_mass = total_weight(kite_area, DA_weight, extrapolation_perc(kite_area))+canopy_weight(kite_area, AL_weight)[0]-\
+                    canopy_weight(kite_area, DA_weight)[0]-canopy_weight(kite_area, AL_weight)[0]
     Valve_reinforcement_mass = (((total_weight(kite_area, DA_weight, extrapolation_perc(kite_area))+ canopy_weight(kite_area, AL_weight)[0]-canopy_weight(kite_area, DA_weight)[0]-canopy_weight(kite_area, AL_weight)[0])/AL_weight)-25)*AL_weight
 
     #Print OUTPUTS
