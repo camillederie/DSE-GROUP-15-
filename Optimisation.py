@@ -68,7 +68,7 @@ def iteration_aero_power(area_diff, A_proj, TAS):
 
     return data
 
-data = iteration_aero_power(area_diff, A_proj, TAS)
+# data = iteration_aero_power(area_diff, A_proj, TAS)
 
 # Open Data
 file = open("data_optim.txt")
@@ -96,7 +96,7 @@ print(data)
 # gamma_in = data['gamma_in_n']
 
 
-
+'''
 # A_proj_last = 0
 # c=0
 # area_diff = 0.001
@@ -139,7 +139,8 @@ print(data)
 #     file.write('%s:%s\n' % (key, value))
 # file.close()
 # print('The extended results of the analysis can be found in the data file added to the directory.')
-    
+'''
+
 #DEFINITIONS
 len_drum = 1.10
 extra_len = 75
@@ -165,6 +166,6 @@ max_kite_angle = 35
 road_angle = 2
 
 req_fric_coeff, sliding_d_mm = anchoring_info(Kite_f, Riv_w, road_angle, min_kite_angle, max_kite_angle, ref_kin_fric_coeff, force_duration)
-vw_ground = 8. #m/s
+vw_ground = 10. #m/s
 chord = max(data['chords']) #m
 launching_equipment_info(vw_ground, req_fric_coeff, data['flat_area'], chord, Kite_mass_ALUULA)
