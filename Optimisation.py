@@ -18,7 +18,7 @@ TAS = 32.5
 area_diff = 0.001
 
 def iteration_aero_power(area_diff, A_proj, TAS):
-    Points = 1000
+    Points = 1000000
     Kite_segments = 12
     N_split = 5
     AoA_range_out = np.arange(8, 15.5, 0.5)

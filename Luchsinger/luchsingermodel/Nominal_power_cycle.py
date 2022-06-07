@@ -393,7 +393,7 @@ def run_TF_anal(data):
     file.close()
     print('The extended results of the analysis can be found in the data file added to the directory.')
 
-data = get_initial_data()
+#data = get_initial_data()
 data = run_nominal_analysis(get_initial_data())  
 
 

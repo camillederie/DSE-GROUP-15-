@@ -13,8 +13,8 @@ def get_initial_data():
     data['CD_out'] = 0.147
     #data['CL_in'] = 0.1
     data['CD_in'] = 0.099
-    data['eff_in'] = 0.652
-    data['eff_out'] = 0.639
+    data['eff_in'] = 0.639#0.652 #were switched
+    data['eff_out'] = 0.652#0.639
 
     data['P_avg_e_req'] = 20000 #Nominal electrical power (W)
     data['max_reel_speed'] = 25 #m/s
