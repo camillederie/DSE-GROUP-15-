@@ -1,5 +1,6 @@
 
-from Luchsinger.luchsingermodel.InputV2 import *
+#from Luchsinger.luchsingermodel.InputV2 import *
+from InputV2 import *
 import numpy as np 
 from matplotlib import cm
 from matplotlib.colors import ListedColormap,LinearSegmentedColormap
@@ -50,59 +51,58 @@ def calculate_opt_gamma_nominal(data):
     
     return data, plot_gamma_data
 
+
 def calculate_opt_gamma_nominal_elev(data):
 
-    plot_gamma_data = {}
-    # Define gamma range ##
-    #Prohibits reel-in speed from exceeding max reeling speed # 
-    # if data['max_reel_speed'] <= 2*data['v_w_n']:
-    #     lim = data['max_reel_speed']/data['v_w_n']
-    # else:
-    #     lim = 2.5
-    lim = 2.5
-    plot_gamma_data['gamma_in']  = np.linspace(0.01,lim,100)
-    plot_gamma_data['gamma_out'] = np.linspace(0.01,1,100)
+        plot_gamma_data = {}
+        # Define gamma range ##
+        #Prohibits reel-in speed from exceeding max reeling speed # 
+        if data['max_reel_speed'] <= 2*data['v_w_n']:
+            lim = data['max_reel_speed']/data['v_w_n']
+        else:
+            lim = 2.5
+        
+        plot_gamma_data['gamma_in']  = np.linspace(0.01,lim,100)
+        plot_gamma_data['gamma_out'] = np.linspace(0.01,1,100)
 
-    # gamma_in = np.linspace(1,3,3)
-    # gamma_out = np.linspace(1,3,3)
+        # gamma_in = np.linspace(1,3,3)
+        # gamma_out = np.linspace(1,3,3)
 
-    ## Set empty arrays ##
-    plot_gamma_data['power_array_m'] = np.zeros((100,100))
-    plot_gamma_data['power_array_e'] = np.zeros((100,100))
-    ## Initiate counters ##
-    ci = 0
-    cj = 0
-    for j in plot_gamma_data['gamma_out']:
-        for i in plot_gamma_data['gamma_in']: 
-            
-            #plot_gamma_data['power_array_m'][cj][ci] = data['P_w']*data['A_proj']*(data['F_out']*(np.cos(data['a_elev_out'])-j)**2-(data['F_in']*(i**2+2*np.cos(data['a_elev_in'])*i+1)))*((j*i)/(j+i))
-            plot_gamma_data['power_array_e'][cj][ci] = data['P_w']*data['A_proj']*(data['eff_out']*data['F_out']*(np.cos(data['a_elev_out'])-j)**2-(data['F_in']*(i**2+2*np.cos(data['a_elev_in'])*i+1))/data['eff_in'])*((j*i)/(j+i))
-            ci  += 1
-    
-        cj +=1
-        ci = 0 
+        ## Set empty arrays ##
+        plot_gamma_data['power_array_m'] = np.zeros((100,100))
+        plot_gamma_data['power_array_e'] = np.zeros((100,100))
+        ## Initiate counters ##
+        ci = 0
+        cj = 0
+        for j in plot_gamma_data['gamma_out']:
+            for i in plot_gamma_data['gamma_in']: 
+                
+                #plot_gamma_data['power_array_m'][cj][ci] = data['P_w']*data['A_proj']*(data['F_out']*(np.cos(data['a_elev_out'])-j)**2-(data['F_in']*(i**2+2*np.cos(data['a_elev_in'])*i+1)))*((j*i)/(j+i))
+                plot_gamma_data['power_array_e'][cj][ci] = data['P_w']*data['A_proj']*(data['eff_out']*data['F_out']*(np.cos(data['a_elev_out'])-j)**2-(data['F_in']*(i**2+2*np.cos(data['a_elev_in'])*i+1))/data['eff_in'])*((j*i)/(j+i))
+                ci  += 1
+        
+            cj +=1
+            ci = 0 
 
 
-    ## Find maximal mechanical power  ##    
-     
-    #data['max_power_m'] = np.amax(plot_gamma_data['power_array_m'])
-    data['P_elec_opt_gamma'] = np.amax(plot_gamma_data['power_array_e'])
-    #(a,b) = np.where(power_array_m == max_power_m)
-    (a,b) = np.where(plot_gamma_data['power_array_e'] == data['P_elec_opt_gamma'])
-    
-    data['gamma_out_n'] = plot_gamma_data['gamma_out'][a][0]
-    data['gamma_in_n'] = plot_gamma_data['gamma_in'][b][0]
-
-    
-    data['max_cycle_power'] = data['P_w']*data['A_proj']*data['F_out']*(np.cos(data['a_elev_out']))**3*4/27
-    #print(gamma_out[a],gamma_in[b])
-
-    #print(data['max_power_m'],data['max_power_e'])
-    #np.savetxt('Power.txt',power_array_e)
-
+        ## Find maximal mechanical power  ##    
+        
+        #data['max_power_m'] = np.amax(plot_gamma_data['power_array_m'])
+        data['P_elec_opt_gamma'] = np.amax(plot_gamma_data['power_array_e'])
+        #(a,b) = np.where(power_array_m == max_power_m)
+        (a,b) = np.where(plot_gamma_data['power_array_e'] == data['P_elec_opt_gamma'])
+        
+        data['gamma_out_n'] = plot_gamma_data['gamma_out'][a][0]
+        data['gamma_in_n'] = plot_gamma_data['gamma_in'][b][0]
 
     
-    return data, plot_gamma_data
+        #data['max_cycle_power'] = data['P_w']*data['A_proj']*data['F_out']*(np.cos(data['a_elev_out']))**3*4/27
+        #print(gamma_out[a],gamma_in[b])
+
+        #print(data['max_power_m'],data['max_power_e'])
+        #np.savetxt('Power.txt',power_array_e)
+    
+        return data, plot_gamma_data
 
 ### This function finds the optimal gamma in when a fixed gamma out is set ###
 
@@ -110,12 +110,12 @@ def calculate_opt_gamma_in(data):
 
     plot_gamma_data = {}
     ## Define gamma range ##
-    # Prohibits reel-in speed from exceeding max reeling speed # 
-    # if data['max_reel_speed'] <= 2*data['v_w_n']:
-    #     lim = data['max_reel_speed']/data['v_w_n']
-    # else:
-    #     lim = 2.5
-    lim = 2.5
+    #Prohibits reel-in speed from exceeding max reeling speed # 
+    if data['max_reel_speed'] <= 2*data['v_w_n']:
+        lim = data['max_reel_speed']/data['v_w_n']
+    else:
+        lim = 2.5
+    
     plot_gamma_data['gamma_in']  = np.linspace(0.01,lim,100)
     #plot_gamma_data['gamma_out'] = np.linspace(0.01,1,100)
 
@@ -134,8 +134,6 @@ def calculate_opt_gamma_in(data):
         #plot_gamma_data['power_array_m'][cj][ci] = data['P_w']*data['A_proj']*(data['F_out']*(np.cos(data['a_elev_out'])-j)**2-(data['F_in']*(i**2+2*np.cos(data['a_elev_in'])*i+1)))*((j*i)/(j+i))
         plot_gamma_data['power_array_e'][ci] = data['P_w']*data['A_proj']*(data['eff_out']*data['F_out']*(np.cos(data['a_elev_out'])-data['gamma_out_n'])**2-(data['F_in']*(i**2+2*np.cos(data['a_elev_in'])*i+1))/data['eff_in'])*((data['gamma_out_n']*i)/(data['gamma_out_n']+i))
         ci  += 1
-     
-
 
     ## Find maximal mechanical power  ##    
      
@@ -394,16 +392,78 @@ def run_TF_anal(data):
     print('The extended results of the analysis can be found in the data file added to the directory.')
 
 def sensitivity_analysis(data):
-    data = calculate_opt_gamma_nominal_elev(data)
-    data = calculate_nominal_tractionF(data)
-    if data['T_out_elev_n'] > data['T_out_max']:
-        data['gamma_out_n'] = np.cos(data['a_elev_out']) - np.sqrt(data['T_out_target']*2/(data['rho']*data['v_w_n']**2*data['A_proj']*data['F_out']))
-        data = calculate_opt_gamma_in(data)
-        data = calculate_nominal_tractionF(data)
-    data = calculate_nominal_powers(data)
-    data = calculate_cycle_param(data)
+    datasens ={}
+    datasens['F_out_list'] = data['F_out_list']
+    datasens['A_proj_list'] = data['A_proj_list']
+    datasens['v_w_list'] = data['v_w_adj']
 
-    return data
+    datasens['T_out_list_VW'] =[]
+    datasens['P_avg_e_list_VW'] = []
+    datasens['gamma_out_list_VW'] =[]
+    datasens['gamma_in_list_VW'] = []
+    datasens['cycle_time_list_VW'] = []
+
+    datasens['T_out_list_A'] = []
+    datasens['P_avg_e_list_A'] = []
+
+    datasens['T_out_list_FO'] =[]
+    datasens['P_avg_e_list_FO'] = []
+    datasens['gamma_out_list_FO'] =[]
+    datasens['gamma_in_list_FO'] = []
+    datasens['cycle_time_list_FO'] = []
+
+   
+    for w in data['v_w_adj']:
+        data['v_w_n'] = float(w)
+       
+        data = calculate_opt_gamma_nominal_elev(data)[0]
+        data = calculate_nominal_tractionF(data)
+        if data['T_out_elev_n'] > data['T_out_max']:
+            data['gamma_out_n'] = np.cos(data['a_elev_out']) - np.sqrt(data['T_out_target']*2/(data['rho']*data['v_w_n']**2*data['A_proj']*data['F_out']))
+            data = calculate_opt_gamma_in(data)
+            data = calculate_nominal_tractionF(data)
+        data = calculate_nominal_powers(data)
+        data = calculate_cycle_param(data)
+        datasens['T_out_list_VW'].append(data['T_out_elev_n'])
+        datasens['P_avg_e_list_VW'].append(data['P_avg_elec_elev'])
+        datasens['gamma_out_list_VW'].append(data['gamma_out_n'])
+        datasens['gamma_in_list_VW'].append(data['gamma_in_n'])
+        datasens['cycle_time_list_VW'].append(data['cycle_time'])
+
+    data = get_initial_data()
+    
+    for a in data['A_proj_list']: 
+        data['A_proj'] = a
+        data = calculate_nominal_tractionF(data)
+        data = calculate_nominal_powers(data)
+        datasens['T_out_list_A'].append(data['T_out_elev_n'])
+        datasens['P_avg_e_list_A'].append(data['P_avg_elec_elev'])
+
+    data = get_initial_data()
+    
+    for c in data['F_out_list']:
+        data['F_out'] = c
+        data = calculate_opt_gamma_nominal_elev(data)[0]
+        data = calculate_nominal_tractionF(data)
+        if data['T_out_elev_n'] > data['T_out_max']:
+            data['gamma_out_n'] = np.cos(data['a_elev_out']) - np.sqrt(data['T_out_target']*2/(data['rho']*data['v_w_n']**2*data['A_proj']*data['F_out']))
+            data = calculate_opt_gamma_in(data)
+            data = calculate_nominal_tractionF(data)
+        data = calculate_nominal_powers(data)
+        data = calculate_cycle_param(data)
+        datasens['T_out_list_FO'].append(data['T_out_elev_n'])
+        datasens['P_avg_e_list_FO'].append(data['P_avg_elec_elev'])
+        datasens['gamma_out_list_FO'].append(data['gamma_out_n'])
+        datasens['gamma_in_list_FO'].append(data['gamma_in_n'])
+        datasens['cycle_time_list_FO'].append(data['cycle_time'])
+
+    file = open("Luchsinger\datasens.txt","w") 
+    for key, value in datasens.items(): 
+        file.write('%s:%s\n' % (key, value))
+    file.close()
+    print('The extended results of the analysis can be found in the data file added to the directory.')
+
+    return datasens
 
 #data = get_initial_data()
 data = sensitivity_analysis(get_initial_data())
