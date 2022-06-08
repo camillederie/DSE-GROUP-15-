@@ -71,7 +71,7 @@ def iteration_aero_power(area_diff, run_aero, A_proj, TAS):
     data['F_out'] = CL3_CD2_average_out
     data['F_in'] = CD_average_in
 
-    F_out: 55.72377941424891,
+    F_out: 55.72377941424891
     F_in: 0.10292849974340174
     # data = import_data("data_sens.txt")
     print(data)

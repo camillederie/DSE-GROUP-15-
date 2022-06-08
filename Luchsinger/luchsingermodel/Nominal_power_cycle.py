@@ -211,7 +211,7 @@ def calculate_nominal_powers(data):
 
 def calculate_updated_projected_area(data):
     
-    data['A_proj_u'] =  data['P_avg_e_req']/ data['P_w']/((data['eff_out']*data['F_out']*(np.cos(data['a_elev_out'])-data['gamma_out_n'])**2-(data['F_in']*(data['gamma_in_n']**2+2*np.cos(data['a_elev_in'])*data['gamma_in_n']+1))/data['eff_in'])*(( data['gamma_out_n']* data['gamma_in_n'])/( data['gamma_out_n']+ data['gamma_in_n'])))
+    data['A_proj_u'] = data['P_avg_e_req']/ data['P_w']/((data['eff_out']*data['F_out']*(np.cos(data['a_elev_out'])-data['gamma_out_n'])**2-(data['F_in']*(data['gamma_in_n']**2+2*np.cos(data['a_elev_in'])*data['gamma_in_n']+1))/data['eff_in'])*(( data['gamma_out_n']* data['gamma_in_n'])/( data['gamma_out_n']+ data['gamma_in_n'])))
     data['A_proj']= data['A_proj_u']
     return data
 
@@ -448,7 +448,11 @@ def sensitivity_analysis(data):
         if data['T_out_elev_n'] > data['T_out_max']:
             data['gamma_out_n'] = np.cos(data['a_elev_out']) - np.sqrt(data['T_out_target']*2/(data['rho']*data['v_w_n']**2*data['A_proj']*data['F_out']))
             data = calculate_opt_gamma_in(data)
-            data = calculate_nominal_tractionF(data)
+            data['gamma_out_n'] = np.cos(data['a_elev_out']) - np.sqrt(data['T_out_target']*2/(data['rho']*data['v_w_n']**2*data['A_proj']*data['F_out']))
+    
+        data = calculate_updated_projected_area(data)
+        data['A_proj'] = data['A_proj_u']
+        data = calculate_nominal_tractionF(data)
         data = calculate_nominal_powers(data)
         data = calculate_cycle_param(data)
         datasens['T_out_list_FO'].append(data['T_out_elev_n'])
@@ -462,13 +466,15 @@ def sensitivity_analysis(data):
         file.write('%s:%s\n' % (key, value))
     file.close()
     print('The extended results of the analysis can be found in the data file added to the directory.')
-
+    plt.plot(datasens["v_w_list"],datasens['gamma_out_list_VW'],color = 'r')
+    plt.plot(datasens['v_w_list'],datasens['gamma_in_list_VW'],color = 'b')
+    plt.show()
     return datasens
 
 
 #data = get_initial_data()
 data = sensitivity_analysis(get_initial_data())
-#data = run_nominal_analysis(get_initial_data())  
+data = run_nominal_analysis(get_initial_data())  
 
 
 
