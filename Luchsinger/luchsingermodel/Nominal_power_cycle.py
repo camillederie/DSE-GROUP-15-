@@ -394,7 +394,12 @@ def run_TF_anal(data):
     print('The extended results of the analysis can be found in the data file added to the directory.')
 
 def sensitivity_analysis(data):
+    data = calculate_opt_gamma_nominal_elev(data)
     data = calculate_nominal_tractionF(data)
+    if data['T_out_elev_n'] > data['T_out_max']:
+        data['gamma_out_n'] = np.cos(data['a_elev_out']) - np.sqrt(data['T_out_target']*2/(data['rho']*data['v_w_n']**2*data['A_proj']*data['F_out']))
+        data = calculate_opt_gamma_in(data)
+        data = calculate_nominal_tractionF(data)
     data = calculate_nominal_powers(data)
     data = calculate_cycle_param(data)
 
