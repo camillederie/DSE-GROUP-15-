@@ -16,6 +16,7 @@ AoA_range_out = np.arange(8, 15.5, 0.5)
 AoA_range_in = np.arange(-1, 3.5, 0.5)
 TAS = 32.5
 area_diff = 0.001
+# data = {}
 
 # Open Data
 def import_data(file_name):
@@ -38,7 +39,7 @@ def import_data(file_name):
             data[key] = float(value)
     return data
 
-def iteration_aero_power(area_diff, A_proj, TAS):
+def iteration_aero_power(area_diff, run_aero, A_proj, TAS):
     Points = 1000000
     Kite_segments = 12
     N_split = 5
@@ -46,25 +47,27 @@ def iteration_aero_power(area_diff, A_proj, TAS):
     AoA_range_in = np.arange(-1, 3.5, 0.5)
 
     ## AERO ##
-    print('Aero started')
-    print('A_proj=', A_proj)
 
-    CL_average_out, CD_average_out, CL3_CD2_average_out, CD_average_in, A_proj, Strut_area_av, flat_area, flat_area_span, chords = main_aero_function(
-        A_proj, Points, Kite_segments, N_split, AoA_range_out, AoA_range_in, TAS, Print=False)
-        # CL_average_in, CD_average_in, CL3_CD2_average_in, A_proj, Strut_area_av, flat_area, flat_area_span, chords = main_aero_function(A_proj, Points, Kite_segments, N_split, AoA_range_in, TAS, Print=False)
-    print('Aero part finished')
     print('A_proj=', A_proj)
-    ## POWER ##
-    data = get_initial_data()
-    data['F_out'] = CL3_CD2_average_out
-    data['F_in'] = CD_average_in
-    data['CL_out']
-    data['CL_out'] = CL_average_out
-    data['CD_out'] = CD_average_out
-    # data['CL_in'] = CL_average_in
-    data['CD_in'] = CD_average_in
+    if run_aero == True:
+        print('Aero started')
+        CL_average_out, CD_average_out, CL3_CD2_average_out, CD_average_in, A_proj, Strut_area_av, flat_area, flat_area_span, chords = main_aero_function(
+            A_proj, Points, Kite_segments, N_split, AoA_range_out, AoA_range_in, TAS, Print=False)
+            # CL_average_in, CD_average_in, CL3_CD2_average_in, A_proj, Strut_area_av, flat_area, flat_area_span, chords = main_aero_function(A_proj, Points, Kite_segments, N_split, AoA_range_in, TAS, Print=False)
+        print('Aero part finished')
+        print('A_proj=', A_proj)
+        ## POWER ##
+        data = get_initial_data()
+        data['F_out'] = CL3_CD2_average_out
+        data['F_in'] = CD_average_in
+        data['CL_out']
+        data['CL_out'] = CL_average_out
+        data['CD_out'] = CD_average_out
+        # data['CL_in'] = CL_average_in
+        data['CD_in'] = CD_average_in
 
-    import_data("data_sens.txt")
+    data = import_data("data_sens.txt")
+    print(data)
     # data['gamma_out_n_init'] = 0.4096
     # data['gamma_in_n_init'] = 1.796
 
@@ -84,7 +87,7 @@ def iteration_aero_power(area_diff, A_proj, TAS):
     print('The extended results of the analysis can be found in the data file added to the directory.')
     return data
 
-data = iteration_aero_power(area_diff, A_proj, TAS)
+data = iteration_aero_power(area_diff, False, A_proj, TAS)
 
 data = import_data("data_sens.txt")
 
