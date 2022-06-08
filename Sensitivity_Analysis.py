@@ -1,6 +1,6 @@
 # Optimisation of the Main System Parameters
 import numpy as np
-
+import matplotlib.pyplot as plt
 from Drum_and_tether_design import structures_calculation
 from Luchsinger.luchsingermodel.Nominal_power_cycle import sensitivity_analysis
 from Luchsinger.luchsingermodel.InputV2 import get_initial_data
@@ -9,6 +9,7 @@ from Anchoring_design import anchoring_info
 from LaunchingEquipment import launching_equipment_info
 
 A_proj = 15.19
+A_proj = np.linspace(10,25,20)
 Points = 1000000
 Kite_segments = 12
 N_split = 5
@@ -67,6 +68,11 @@ def iteration_aero_power(area_diff, run_aero, A_proj, TAS):
         data['CD_in'] = CD_average_in
 
     data = get_initial_data()
+    data['F_out'] = CL3_CD2_average_out
+    data['F_in'] = CD_average_in
+
+    F_out: 55.72377941424891,
+    F_in: 0.10292849974340174
     # data = import_data("data_sens.txt")
     print(data)
     # data['gamma_out_n_init'] = 0.4096
@@ -89,6 +95,26 @@ def iteration_aero_power(area_diff, run_aero, A_proj, TAS):
     return data
 
 data = iteration_aero_power(area_diff, True, A_proj, TAS)
+
+fig, ax1 = plt.subplots()
+ax2 = ax1.twiny()
+ax1.plot(data['v_w_n'],data['P_avg_elec_elev_verif'], color = 'g')
+ax2.plot(data['v_w_n'],data['T_out_elev_n'], color = 'b')
+ax1.set_ylabel('Average Electric Power', color = 'r')
+ax2.set_ylabel('Tether Force (N)')
+ax2.set_xlabel('Wind Speed at Operational Altitude (m/s)', color = 'b')
+plt.grid()
+plt.show()
+
+fig, ax1 = plt.subplots()
+ax2 = ax1.twiny()
+ax1.plot(data['A_proj'],data['P_avg_elec_elev_verif'], color = 'g')
+ax2.plot(data['A_proj'],data['T_out_elev_n'], color = 'b')
+ax1.set_ylabel('Average Electric Power', color = 'r')
+ax2.set_ylabel('Tether Force (N)')
+ax2.set_xlabel('Projected Kite Area (m2)', color = 'b')
+plt.grid()
+plt.show()
 
 data = import_data("data_sens.txt")
 
@@ -175,3 +201,4 @@ req_fric_coeff, sliding_d_mm = anchoring_info(Kite_f, Riv_w, road_angle, min_kit
 vw_ground = 10.  # m/s
 chord = max(data['chords'])  # m
 launching_equipment_info(vw_ground, req_fric_coeff, data['flat_area'], chord, Kite_mass_ALUULA)
+#
