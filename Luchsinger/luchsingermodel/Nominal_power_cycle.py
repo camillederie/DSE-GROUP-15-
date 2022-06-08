@@ -396,6 +396,7 @@ def run_TF_anal(data):
 def sensitivity_analysis(data):
     data = calculate_nominal_tractionF(data)
     data = calculate_nominal_powers(data)
+    data = calculate_cycle_param(data)
 
     return data
 
