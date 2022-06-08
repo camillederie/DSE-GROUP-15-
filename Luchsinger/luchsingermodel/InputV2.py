@@ -8,6 +8,7 @@ def get_initial_data():
     data['CL_out'] = 1.06 #np.linspace(0.6,1.5,50)
     data['A_proj'] = 15.19 #12.302 #10.04#15.681 #9.723#9.34#21.54#24.19 #8.18 #24.19 #20.79 #21.57 #np.linspace(15,35,50) #19.8 #
     data['T_out_target'] = 11100
+    data['T_out_max'] = 10500
     data['rho'] = 1.18
     data['lc'] = 250
     data['CD_out'] = 0.147
