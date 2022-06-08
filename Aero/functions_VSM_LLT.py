@@ -529,15 +529,17 @@ def output_results(Fmag, aero_coeffs, ringvec, Uinf, controlpoints, Atot):
                            , dot_product(L_rel, Uinf / vec_norm(Uinf)) + dot_product(D_rel, Uinf / vec_norm(Uinf))])
 
     # Calculate total aerodynamic forces
+    Lift = []
     for i in range(len(Fmag_gl)):
         Ltot += Fmag_gl[i][0] * np.linalg.norm(ringvec[i]['r0'])
+        Lift.append(Fmag_gl[i][0] * np.linalg.norm(ringvec[i]['r0']))
         Dtot += Fmag_gl[i][1] * np.linalg.norm(ringvec[i]['r0'])
 
     Umag = np.linalg.norm(Uinf)
     CL = Ltot / (0.5 * Umag ** 2 * Atot)
     CD = Dtot / (0.5 * Umag ** 2 * Atot)
 
-    return F_rel, F_gl, Ltot, Dtot, CL, CD
+    return F_rel, F_gl, Ltot, Dtot, CL, CD, Lift
 
 
 def create_geometry_general(coordinates, Uinf, N, ring_geo, model):
@@ -930,9 +932,11 @@ def plot_geometry(wingpanels, controlpoints, rings, F, coord_L, plot):
                 else:
                     coord = np.array([filament['x1'], filament['x2']])
                     # ax.plot3D(coord[:, 0], coord[:, 1], coord[:, 2])
+        # ax.plot3D([-1.048, 0], [-4.716, -4.716], [0, 0], 'blue')
         ax.set_xlabel("x [m]")
         ax.set_ylabel("y [m]")
         ax.set_zlabel("z [m]")
+        ax.set_box_aspect([ub - lb for lb, ub in (getattr(ax, f'get_{a}lim')() for a in 'xyz')])
 
         # for i in range(len(F)):
         # coord = np.array([coord_L[i],coord_L[i]+F[i][0]])

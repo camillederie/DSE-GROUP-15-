@@ -27,10 +27,10 @@ if Kite15 == True:
     Name1 = 'Kite15'
     Atot = 21.54  # Projected area
     Segments = 10  # Number of kite segments
-    Points = 500000  # Number of points for coord function
+    Points = 1000000  # Number of points for coord function
     Plotting = False
     # CAD = VSM.get_Kite15_coords()  # Geometry nodes locations
-    coords, chords = CGEN.Generate_Kite15_coords(Atot, Segments, Points, Plotting)
+    coords, chords, MAC, arclength = CGEN.Generate_Kite15_coords(Atot, Segments, Points, Plotting)
     # coords = VSM.struct2aero_geometry(CAD)  # Change geometry to definition
     N = int(len(coords) / 2)  # Number of sections defined
 
@@ -68,7 +68,8 @@ conv_crit = {
     }
 
 thicknesses = np.arange(0.15, 0.25, 0.05)
-thicknesses = [0.1*chords, 0.15*chords, 0.2*chords, np.array([0.25, 0.25, 0.25, 0.25, 0.25, 0.25, 0.25, 0.25, 0.25, 0.25]), np.array([0.2, 0.2, 0.2, 0.2, 0.2, 0.2, 0.2, 0.2, 0.2, 0.2]), np.array([0.3, 0.3, 0.3, 0.3, 0.3, 0.3, 0.3, 0.3, 0.3, 0.3])]
+thicknesses = [0.08*chords, 0.1*chords, 0.12*chords, 0.14*chords,
+               0.04*MAC*np.ones(len(chords)), 0.06*MAC*np.ones(len(chords)), 0.08*MAC*np.ones(len(chords)), 0.1*MAC*np.ones(len(chords))]
 CD_loop = []
 CL_loop = []
 LD_loop = []
@@ -115,7 +116,7 @@ if Polars == True:
 
             # Definition of the thickness distribution for the refined mesh
             thicc = np.array([])
-            for i in range(9):
+            for i in range(Segments-1):
                 temp = np.linspace(t[i],t[i+1],N_split+1)
                 temp1 = []
                 for a in range(len(temp)-1):
@@ -145,7 +146,7 @@ if Polars == True:
             Fmag, Gamma,aero_coeffs = VSM.solve_lifting_line_system_matrix_approach_semiinfinite(
                 ringvec, controlpoints, rings,Uinf,data_airf,conv_crit,model)
             #%OUTPUT Results
-            F_rel,F_gl,Ltot,Dtot,CL,CD = VSM.output_results(Fmag,aero_coeffs,ringvec,Uinf,controlpoints,Atot)
+            F_rel,F_gl,Ltot,Dtot,CL,CD,Lift = VSM.output_results(Fmag,aero_coeffs,ringvec,Uinf,controlpoints,Atot)
 
             print(angle, CL,CD)
 
@@ -170,12 +171,13 @@ if Polars == True:
     fig, ax3 = plt.subplots()
     fig, ax4 = plt.subplots()
 
+    labels = ["8% c", '10% c', '12% c', '14% c', '4% MAC', '6% MAC', '8% MAC', '10% MAC']
 
     for i in range(len(CL_loop)):
-        ax1.plot(aoa_0, LD_loop[i], linestyle=linestyles[i], label=f'thickness = {np.around(thicknesses[i], 2)} m')
-        ax2.plot(aoa_0, Power_loop[i], linestyle=linestyles[i], label =f'thickness = {np.around(thicknesses[i], 2)} m')
-        ax3.plot(aoa_0, CL_loop[i], linestyle=linestyles[i], label =f'thickness = {np.around(thicknesses[i], 2)} m')
-        ax4.plot(aoa_0, CD_loop[i], linestyle=linestyles[i], label =f'thickness = {np.around(thicknesses[i], 2)} m')
+        ax1.plot(aoa_0, LD_loop[i], linestyle=linestyles[i], label=f'{labels[i]}')
+        ax2.plot(aoa_0, Power_loop[i], linestyle=linestyles[i], label =f'{labels[i]}')
+        ax3.plot(aoa_0, CL_loop[i], linestyle=linestyles[i], label =f'{labels[i]}')
+        ax4.plot(aoa_0, CD_loop[i], linestyle=linestyles[i], label =f'{labels[i]}')
 
     ax1.set_xlabel(r'$\alpha$ [deg]')
     ax1.set_ylabel(r'$C_L/C_D$ [-]')
@@ -201,7 +203,8 @@ if Polars == True:
     plt.tight_layout()
     # plt.savefig(results_dir + Name1 + '_CD_a.png')
     # plt.legend()
-
+    for el in thicknesses:
+        print(el[0])
     plt.show()
 
 else:

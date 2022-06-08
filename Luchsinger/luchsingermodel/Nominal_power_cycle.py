@@ -1,23 +1,23 @@
 
+#from Luchsinger.luchsingermodel.InputV2 import *
 from InputV2 import *
 import numpy as np 
-from Input import *
 from matplotlib import cm
 from matplotlib.colors import ListedColormap,LinearSegmentedColormap
 import matplotlib.pyplot as plt
 
-
+#Luchsinger.luchsingermodel.
 ### This function finds the optimal gamma for nominal flight conditions defined in Input.py and plots this on a heat map ###
 def calculate_opt_gamma_nominal(data):
 
     plot_gamma_data = {}
     # Define gamma range ##
     #Prohibits reel-in speed from exceeding max reeling speed # 
-    if max_reel_speed <= 2*data['v_w_n']: 
+    if data['max_reel_speed'] <= 2*data['v_w_n']: 
         lim = data['max_reel_speed']/data['v_w_n']
     else:
-        lim = 2.6
-    lim = 2.6
+        lim = 2
+    lim = 2.0
     plot_gamma_data['gamma_in']  = np.linspace(0.01,lim,100)
     plot_gamma_data['gamma_out'] = np.linspace(0.01,1,100)
 
@@ -51,69 +51,70 @@ def calculate_opt_gamma_nominal(data):
     
     return data, plot_gamma_data
 
+
 def calculate_opt_gamma_nominal_elev(data):
 
-    plot_gamma_data = {}
-    # Define gamma range ##
-    #Prohibits reel-in speed from exceeding max reeling speed # 
-    if max_reel_speed <= 2*data['v_w_n']: 
-        lim = data['max_reel_speed']/data['v_w_n']
-    else:
-        lim = 2.6
-    
-    plot_gamma_data['gamma_in']  = np.linspace(0.01,lim,100)
-    plot_gamma_data['gamma_out'] = np.linspace(0.01,1,100)
+        plot_gamma_data = {}
+        # Define gamma range ##
+        #Prohibits reel-in speed from exceeding max reeling speed # 
+        if data['max_reel_speed'] <= 2*data['v_w_n']:
+            lim = data['max_reel_speed']/data['v_w_n']
+        else:
+            lim = 2.5
+        
+        plot_gamma_data['gamma_in']  = np.linspace(0.01,lim,100)
+        plot_gamma_data['gamma_out'] = np.linspace(0.01,1,100)
 
-    # gamma_in = np.linspace(1,3,3)
-    # gamma_out = np.linspace(1,3,3)
+        # gamma_in = np.linspace(1,3,3)
+        # gamma_out = np.linspace(1,3,3)
 
-    ## Set empty arrays ##
-    plot_gamma_data['power_array_m'] = np.zeros((100,100))
-    plot_gamma_data['power_array_e'] = np.zeros((100,100))
-    ## Initiate counters ##
-    ci = 0
-    cj = 0
-    for j in plot_gamma_data['gamma_out']:
-        for i in plot_gamma_data['gamma_in']: 
-            
-            #plot_gamma_data['power_array_m'][cj][ci] = data['P_w']*data['A_proj']*(data['F_out']*(np.cos(data['a_elev_out'])-j)**2-(data['F_in']*(i**2+2*np.cos(data['a_elev_in'])*i+1)))*((j*i)/(j+i))
-            plot_gamma_data['power_array_e'][cj][ci] = data['P_w']*data['A_proj']*(data['eff_out']*data['F_out']*(np.cos(data['a_elev_out'])-j)**2-(data['F_in']*(i**2+2*np.cos(data['a_elev_in'])*i+1))/data['eff_in'])*((j*i)/(j+i))
-            ci  += 1
-    
-        cj +=1
-        ci = 0 
+        ## Set empty arrays ##
+        plot_gamma_data['power_array_m'] = np.zeros((100,100))
+        plot_gamma_data['power_array_e'] = np.zeros((100,100))
+        ## Initiate counters ##
+        ci = 0
+        cj = 0
+        for j in plot_gamma_data['gamma_out']:
+            for i in plot_gamma_data['gamma_in']: 
+                
+                #plot_gamma_data['power_array_m'][cj][ci] = data['P_w']*data['A_proj']*(data['F_out']*(np.cos(data['a_elev_out'])-j)**2-(data['F_in']*(i**2+2*np.cos(data['a_elev_in'])*i+1)))*((j*i)/(j+i))
+                plot_gamma_data['power_array_e'][cj][ci] = data['P_w']*data['A_proj']*(data['eff_out']*data['F_out']*(np.cos(data['a_elev_out'])-j)**2-(data['F_in']*(i**2+2*np.cos(data['a_elev_in'])*i+1))/data['eff_in'])*((j*i)/(j+i))
+                ci  += 1
+        
+            cj +=1
+            ci = 0 
 
 
-    ## Find maximal mechanical power  ##    
-     
-    #data['max_power_m'] = np.amax(plot_gamma_data['power_array_m'])
-    data['P_elec_opt_gamma'] = np.amax(plot_gamma_data['power_array_e'])
-    #(a,b) = np.where(power_array_m == max_power_m)
-    (a,b) = np.where(plot_gamma_data['power_array_e'] == data['P_elec_opt_gamma'])
-    
-    data['gamma_out_n'] = plot_gamma_data['gamma_out'][a][0]
-    data['gamma_in_n'] = plot_gamma_data['gamma_in'][b][0]
-
-    
-    data['max_cycle_power'] = data['P_w']*data['A_proj']*data['F_out']*(np.cos(data['a_elev_out']))**3*4/27
-    #print(gamma_out[a],gamma_in[b])
-
-    #print(data['max_power_m'],data['max_power_e'])
-    #np.savetxt('Power.txt',power_array_e)
-
+        ## Find maximal mechanical power  ##    
+        
+        #data['max_power_m'] = np.amax(plot_gamma_data['power_array_m'])
+        data['P_elec_opt_gamma'] = np.amax(plot_gamma_data['power_array_e'])
+        #(a,b) = np.where(power_array_m == max_power_m)
+        (a,b) = np.where(plot_gamma_data['power_array_e'] == data['P_elec_opt_gamma'])
+        
+        data['gamma_out_n'] = plot_gamma_data['gamma_out'][a][0]
+        data['gamma_in_n'] = plot_gamma_data['gamma_in'][b][0]
 
     
-    return data, plot_gamma_data
+        #data['max_cycle_power'] = data['P_w']*data['A_proj']*data['F_out']*(np.cos(data['a_elev_out']))**3*4/27
+        #print(gamma_out[a],gamma_in[b])
+
+        #print(data['max_power_m'],data['max_power_e'])
+        #np.savetxt('Power.txt',power_array_e)
+    
+        return data, plot_gamma_data
+
+### This function finds the optimal gamma in when a fixed gamma out is set ###
 
 def calculate_opt_gamma_in(data):
 
     plot_gamma_data = {}
     ## Define gamma range ##
-    # Prohibits reel-in speed from exceeding max reeling speed # 
-    if max_reel_speed <= 2*data['v_w_n']: 
+    #Prohibits reel-in speed from exceeding max reeling speed # 
+    if data['max_reel_speed'] <= 2*data['v_w_n']:
         lim = data['max_reel_speed']/data['v_w_n']
     else:
-        lim = 2
+        lim = 2.5
     
     plot_gamma_data['gamma_in']  = np.linspace(0.01,lim,100)
     #plot_gamma_data['gamma_out'] = np.linspace(0.01,1,100)
@@ -133,8 +134,6 @@ def calculate_opt_gamma_in(data):
         #plot_gamma_data['power_array_m'][cj][ci] = data['P_w']*data['A_proj']*(data['F_out']*(np.cos(data['a_elev_out'])-j)**2-(data['F_in']*(i**2+2*np.cos(data['a_elev_in'])*i+1)))*((j*i)/(j+i))
         plot_gamma_data['power_array_e'][ci] = data['P_w']*data['A_proj']*(data['eff_out']*data['F_out']*(np.cos(data['a_elev_out'])-data['gamma_out_n'])**2-(data['F_in']*(i**2+2*np.cos(data['a_elev_in'])*i+1))/data['eff_in'])*((data['gamma_out_n']*i)/(data['gamma_out_n']+i))
         ci  += 1
-     
-
 
     ## Find maximal mechanical power  ##    
      
@@ -148,12 +147,19 @@ def calculate_opt_gamma_in(data):
     
     return data
 
+### This function plots the Power for gamma in and out combinations ###
+
 def plot_gamma_power(data_plot):
     plot_data = data_plot
     hsv_modified = cm.get_cmap('hsv', 256)# create new hsv colormaps in range of 0.3 (green) to 0.7 (blue)
     newcmp = ListedColormap(hsv_modified(np.linspace(0.2, 1.0, 256)))# show figure
     plt.pcolormesh(plot_data['gamma_out'], plot_data['gamma_in'],np.transpose(plot_data['power_array_e']), cmap = newcmp, shading='auto')
-    plt.colorbar()
+    cbar = plt.colorbar()
+    plt.xlabel(r'$\gamma_{out}$')
+    plt.ylabel(r'$\gamma_{in}$')
+    #plt.colorbar()
+    cbar.set_label('Average Output Power')
+    
     plt.show()
 
 ### This function calculates the traction forces for nominal flight conditions ###
@@ -167,6 +173,8 @@ def calculate_nominal_tractionF(data):
     data['T_in_elev_n'] =  0.5*data['rho']*data['v_w_n']**2*data['A_proj']*(1+2*data['gamma_in_n']*np.cos(data['a_elev_in'])+data['gamma_in_n']**2)*data['F_in']
 
     return data
+
+### This function calculates the powers during all phases of the power cycle ###
 
 def calculate_nominal_powers(data):
 
@@ -199,11 +207,15 @@ def calculate_nominal_powers(data):
     
     return data
 
+### This function updates the projected area based on the average power requirement ###
+
 def calculate_updated_projected_area(data):
     
     data['A_proj_u'] =  data['P_avg_e_req']/ data['P_w']/((data['eff_out']*data['F_out']*(np.cos(data['a_elev_out'])-data['gamma_out_n'])**2-(data['F_in']*(data['gamma_in_n']**2+2*np.cos(data['a_elev_in'])*data['gamma_in_n']+1))/data['eff_in'])*(( data['gamma_out_n']* data['gamma_in_n'])/( data['gamma_out_n']+ data['gamma_in_n'])))
-    print(data['A_proj_u'])
+    data['A_proj']= data['A_proj_u']
     return data
+
+### This function calculates the cycle times ###
 
 def calculate_cycle_param(data):
 
@@ -213,13 +225,17 @@ def calculate_cycle_param(data):
 
     return data
 
+### This function looks for gamma outs to lower the traction force, and directly updates the area accordingly
 def evaluate_tether_force(data): 
      
-    data['gamma_out_init'] = data['gamma_out_n']
+    data['gamma_out_n_init'] = data['gamma_out_n']
+    data['gamma_in_n_init'] = data['gamma_in_n']
     data['A_proj_init'] = data['A_proj']
+
     TF_an = {'gamma_out':[],'force': [],'area':[]}
     while data['gamma_out_n'] < .6:
         data['gamma_out_n'] += 0.01
+        data = calculate_opt_gamma_in(data)
         data = calculate_updated_projected_area(data)
         data['A_proj'] = data['A_proj_u']
 
@@ -229,12 +245,23 @@ def evaluate_tether_force(data):
         TF_an['force'].append(data['T_out_elev_n'])
         TF_an['area'].append(data['A_proj'])
 
+    #plot_TF_an(TF_an)
+    #data['gamma_out_n'] 
+    data['gamma_out_n'] = 0.43#float(input('Enter the chosen gamma reel-out to find the correspinding optimal gamma reel-in: '))
+    data = calculate_opt_gamma_in(data)
+    data = calculate_updated_projected_area(data)
+    data['A_proj'] = data['A_proj_u']
+    data['gamma_out_n'] = np.cos(data['a_elev_out']) - np.sqrt(data['T_out_target']*2/(data['rho']*data['v_w_n']**2*data['A_proj']*data['F_out']))
+    data = calculate_opt_gamma_in(data)
+    data = calculate_updated_projected_area(data)
+    data['A_proj'] = data['A_proj_u']
+    data = calculate_nominal_tractionF(data)
+    data = calculate_nominal_powers(data)
     
-    return TF_an
+    return data
 
-def evaluate_tether_force_areafix(data):
-    data['gamma_out_v_w_gust'] = np.cos(data['a_elev_out']) - np.sqrt(10329/(0.5*data['rho']*data['v_w_adj']**2*data['A_proj']*data['F_out']))
-    
+def evaluate_adj_wind_areafix(data,v_w_adj):
+    data['gamma_out_v_w_adj'] = np.cos(data['a_elev_out']) - np.sqrt(data['T_out_elev_n']/(0.5*data['rho']*v_w_adj**2*data['A_proj']*data['F_out']))
     return data
          
 def plot_TF_an(TF_an):
@@ -248,6 +275,8 @@ def plot_TF_an(TF_an):
     plt.grid()
     plt.show()
 
+### This function calculates the apparent and kite cross wind speed required ###
+
 def calculate_apparent_speed(data):
     v_out = data['v_w_n']*data['gamma_out_n']
     v_in  = data['v_w_n']*data['gamma_in_n']
@@ -258,6 +287,7 @@ def calculate_apparent_speed(data):
     data['v_kc'] = np.sqrt(-(v_w**2-2*v_w*v_out*np.cos(data['a_elev_out'])+v_out**2-data['v_a_out']**2))
     return data
 
+### Size Power Components ###
 def size_supercap(data):
 
     data['E_out'] = data['P_out_e_elev']*data['t_out'] *0.000277777778
@@ -268,22 +298,37 @@ def size_supercap(data):
 def size_generator(data):
     data['rpm_n_out'] = data['v_w_n']*data['gamma_out_n']/(data['drum_circum'])*60
     data['rpm_n_in'] = data['v_w_n']*data['gamma_in_n']/(data['drum_circum'])*60
-    print(data['rpm_n_out'],data['rpm_n_in'])
+   # print(data['rpm_n_out'],data['rpm_n_in'])
     data['GR_min'] = data['rpm_n_out']/data['rpm_min']
     data['GR_n'] = data['rpm_n_out']/data['rpm_n']
     data['GR_max'] = data['rpm_n_out']/data['rpm_max']
-    v_r_out = np.linspace(2,10)
+    data['GR_motor'] = data['rpm_n_in']/data['rpm_motor']
 
+
+    data = evaluate_adj_wind_areafix(data,data['v_w_adj'])
+    v_r_out = data['gamma_out_v_w_adj']*data['v_w_adj']
+    rpm_max = np.ones(len(v_r_out))*data['rpm_max']
+    
     rpm = (v_r_out/(data['drum_circum'])*60)/data['GR_n']
+    data['P_out_e_adj_wind'] = (((rpm+436.25)/69.124))
 
-    plt.plot(v_r_out,rpm)
-    plt.show()
+    fig, ax1 = plt.subplots()
+    ax2 = ax1.twinx()
 
-
+    ax1.plot(data['v_w_adj'],data['P_out_e_adj_wind'], color = 'g')
+    ax2.plot(data['v_w_adj'],rpm_max, color = 'r', label = 'Maximal rotational speed')
+    ax2.plot(data['v_w_adj'],rpm, color = 'b', label = 'Rotational speed and output power vs wind speed')
+    ax2.set_ylabel('Rotational speed of generator (rpm)')
+    ax1.set_xlabel('Wind speed (m/s)')
+    ax1.set_ylabel('Electrical output power (kW)')
+    plt.legend()
+    plt.grid()
+    
+    #plt.show()
 
     return data
     
-
+### Do Analysis ###
 def run_nominal_analysis(data):
     ip = 1
     #ip = int(input('Enter 1 if you want to take the tether elevation into account for finding the optimal reeling speeds, 0 for ignoring it: '))
@@ -303,13 +348,18 @@ def run_nominal_analysis(data):
         print('The projected area of the kite should be iterated on!')
     else: 
         print('The area of the kite is optimal for the required power output.')
+    
+    data = calculate_nominal_tractionF(data)
+    data = calculate_nominal_powers(data)
     data = calculate_cycle_param(data)
+    data = calculate_apparent_speed(data)
+    data = size_supercap(data)
     
     #plot_gamma_power(data_plot)
 
 
     # Write to file #
-    file = open("data.txt","w") 
+    file = open("Luchsinger\data.txt","w") 
     for key, value in data.items(): 
         file.write('%s:%s\n' % (key, value))
     file.close()
@@ -324,48 +374,102 @@ def run_nominal_analysis(data):
     else: 
         print('Enter a valid number!')
         quit()
-    run_TF_anal_wo_areaupdate(data)
     
     return data
 
 def run_TF_anal(data):
-    TF_an = evaluate_tether_force(data)
-    #print(TF_an)
-    plot_TF_an(TF_an)
-    data['gamma_out_n'] = 0.43#float(input('Enter the chosen gamma reel-out to find the correspinding optimal gamma reel-in: '))
-    data['gamma_in_n_init'] = data['gamma_in_n']
-    data = calculate_updated_projected_area(data)
-    data['A_proj'] = data['A_proj_u']
-    data = calculate_opt_gamma_in(data)
-    print(data['gamma_in_n'])
-    data = calculate_nominal_tractionF(data)
-    data = calculate_updated_projected_area(data)
-    data['A_proj'] = data['A_proj_u']
-    data = calculate_nominal_powers(data)
+    data = evaluate_tether_force(data)
+    data = calculate_cycle_param(data)
     data = calculate_apparent_speed(data)
     data = size_supercap(data)
-    
+    data = size_generator(data)
    
     # Write to file #
-    file = open("data_TF_an.txt","w") 
+    file = open("Luchsinger\data_TF_an.txt","w") 
     for key, value in data.items(): 
         file.write('%s:%s\n' % (key, value))
     file.close()
     print('The extended results of the analysis can be found in the data file added to the directory.')
 
+def sensitivity_analysis(data):
+    datasens ={}
+    datasens['F_out_list'] = data['F_out_list']
+    datasens['A_proj_list'] = data['A_proj_list']
+    datasens['v_w_list'] = data['v_w_adj']
 
-def run_TF_anal_wo_areaupdate(data):   
-    TF_an = evaluate_tether_force(data)
-    #plot_TF_an(TF_an)
-    data['gamma_out_n'] = float(input('Enter the chosen gamma reel-out to find the correspinding optimal gamma reel-in: '))
-    data = calculate_opt_gamma_in(data)
+    datasens['T_out_list_VW'] =[]
+    datasens['P_avg_e_list_VW'] = []
+    datasens['gamma_out_list_VW'] =[]
+    datasens['gamma_in_list_VW'] = []
+    datasens['cycle_time_list_VW'] = []
+
+    datasens['T_out_list_A'] = []
+    datasens['P_avg_e_list_A'] = []
+
+    datasens['T_out_list_FO'] =[]
+    datasens['P_avg_e_list_FO'] = []
+    datasens['gamma_out_list_FO'] =[]
+    datasens['gamma_in_list_FO'] = []
+    datasens['cycle_time_list_FO'] = []
+
+   
+    for w in data['v_w_adj']:
+        data['v_w_n'] = float(w)
+       
+        data = calculate_opt_gamma_nominal_elev(data)[0]
+        data = calculate_nominal_tractionF(data)
+        if data['T_out_elev_n'] > data['T_out_max']:
+            data['gamma_out_n'] = np.cos(data['a_elev_out']) - np.sqrt(data['T_out_target']*2/(data['rho']*data['v_w_n']**2*data['A_proj']*data['F_out']))
+            data = calculate_opt_gamma_in(data)
+            data = calculate_nominal_tractionF(data)
+        data = calculate_nominal_powers(data)
+        data = calculate_cycle_param(data)
+        datasens['T_out_list_VW'].append(data['T_out_elev_n'])
+        datasens['P_avg_e_list_VW'].append(data['P_avg_elec_elev'])
+        datasens['gamma_out_list_VW'].append(data['gamma_out_n'])
+        datasens['gamma_in_list_VW'].append(data['gamma_in_n'])
+        datasens['cycle_time_list_VW'].append(data['cycle_time'])
+
+    data = get_initial_data()
     
-    data = size_generator(data)
-    print(data['rpm'], data['G_power'],data['v_w_adj'],data['gamma_out_adj'],)
-    return data
+    for a in data['A_proj_list']: 
+        data['A_proj'] = a
+        data = calculate_nominal_tractionF(data)
+        data = calculate_nominal_powers(data)
+        datasens['T_out_list_A'].append(data['T_out_elev_n'])
+        datasens['P_avg_e_list_A'].append(data['P_avg_elec_elev'])
 
-data = get_initial_data()
-data = run_nominal_analysis(data)  
+    data = get_initial_data()
+    
+    for c in data['F_out_list']:
+        data['F_out'] = c
+        data = calculate_opt_gamma_nominal_elev(data)[0]
+        data = calculate_nominal_tractionF(data)
+        if data['T_out_elev_n'] > data['T_out_max']:
+            data['gamma_out_n'] = np.cos(data['a_elev_out']) - np.sqrt(data['T_out_target']*2/(data['rho']*data['v_w_n']**2*data['A_proj']*data['F_out']))
+            data = calculate_opt_gamma_in(data)
+            data = calculate_nominal_tractionF(data)
+        data = calculate_nominal_powers(data)
+        data = calculate_cycle_param(data)
+        datasens['T_out_list_FO'].append(data['T_out_elev_n'])
+        datasens['P_avg_e_list_FO'].append(data['P_avg_elec_elev'])
+        datasens['gamma_out_list_FO'].append(data['gamma_out_n'])
+        datasens['gamma_in_list_FO'].append(data['gamma_in_n'])
+        datasens['cycle_time_list_FO'].append(data['cycle_time'])
+
+    file = open("Luchsinger\datasens.txt","w") 
+    for key, value in datasens.items(): 
+        file.write('%s:%s\n' % (key, value))
+    file.close()
+    print('The extended results of the analysis can be found in the data file added to the directory.')
+
+    return datasens
+
+
+#data = get_initial_data()
+data = sensitivity_analysis(get_initial_data())
+#data = run_nominal_analysis(get_initial_data())  
+
 
 
 
