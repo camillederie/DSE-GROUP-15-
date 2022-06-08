@@ -393,6 +393,12 @@ def run_TF_anal(data):
     file.close()
     print('The extended results of the analysis can be found in the data file added to the directory.')
 
+def sensitivity_analysis(data):
+    data = calculate_nominal_tractionF(data)
+    data = calculate_nominal_powers
+
+    return data
+
 #data = get_initial_data()
 data = run_nominal_analysis(get_initial_data())  
 

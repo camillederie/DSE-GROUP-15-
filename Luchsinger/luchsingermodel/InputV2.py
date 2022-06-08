@@ -16,6 +16,9 @@ def get_initial_data():
     data['eff_in'] = 0.639#0.652 #were switched
     data['eff_out'] = 0.652#0.639
 
+    data['gamma_out_n'] = 0.4096
+    data['gamma_in_n'] = 1.796
+
     data['P_avg_e_req'] = 20000 #Nominal electrical power (W)
     data['max_reel_speed'] = 25 #m/s
 
