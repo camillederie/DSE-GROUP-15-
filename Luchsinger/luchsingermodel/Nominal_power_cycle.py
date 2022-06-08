@@ -55,11 +55,11 @@ def calculate_opt_gamma_nominal_elev(data):
     plot_gamma_data = {}
     # Define gamma range ##
     #Prohibits reel-in speed from exceeding max reeling speed # 
-    if data['max_reel_speed'] <= 2*data['v_w_n']: 
-        lim = data['max_reel_speed']/data['v_w_n']
-    else:
-        lim = 2.5
-    
+    # if data['max_reel_speed'] <= 2*data['v_w_n']:
+    #     lim = data['max_reel_speed']/data['v_w_n']
+    # else:
+    #     lim = 2.5
+    lim = 2.5
     plot_gamma_data['gamma_in']  = np.linspace(0.01,lim,100)
     plot_gamma_data['gamma_out'] = np.linspace(0.01,1,100)
 
@@ -111,11 +111,11 @@ def calculate_opt_gamma_in(data):
     plot_gamma_data = {}
     ## Define gamma range ##
     # Prohibits reel-in speed from exceeding max reeling speed # 
-    if data['max_reel_speed'] <= 2*data['v_w_n']: 
-        lim = data['max_reel_speed']/data['v_w_n']
-    else:
-        lim = 2.5
-    
+    # if data['max_reel_speed'] <= 2*data['v_w_n']:
+    #     lim = data['max_reel_speed']/data['v_w_n']
+    # else:
+    #     lim = 2.5
+    lim = 2.5
     plot_gamma_data['gamma_in']  = np.linspace(0.01,lim,100)
     #plot_gamma_data['gamma_out'] = np.linspace(0.01,1,100)
 

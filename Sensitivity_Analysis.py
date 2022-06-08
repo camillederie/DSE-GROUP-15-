@@ -66,7 +66,8 @@ def iteration_aero_power(area_diff, run_aero, A_proj, TAS):
         # data['CL_in'] = CL_average_in
         data['CD_in'] = CD_average_in
 
-    data = import_data("data_sens.txt")
+    data = get_initial_data()
+    # data = import_data("data_sens.txt")
     print(data)
     # data['gamma_out_n_init'] = 0.4096
     # data['gamma_in_n_init'] = 1.796
@@ -87,7 +88,7 @@ def iteration_aero_power(area_diff, run_aero, A_proj, TAS):
     print('The extended results of the analysis can be found in the data file added to the directory.')
     return data
 
-data = iteration_aero_power(area_diff, False, A_proj, TAS)
+data = iteration_aero_power(area_diff, True, A_proj, TAS)
 
 data = import_data("data_sens.txt")
 
