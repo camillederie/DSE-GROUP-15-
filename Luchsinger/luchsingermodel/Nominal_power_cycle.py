@@ -400,7 +400,9 @@ def sensitivity_analysis(data):
     return data
 
 #data = get_initial_data()
-data = run_nominal_analysis(get_initial_data())  
+data = sensitivity_analysis(get_initial_data())
+#data = run_nominal_analysis(get_initial_data())  
+
 
 
 
