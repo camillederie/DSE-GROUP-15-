@@ -78,9 +78,9 @@ def calculate_opt_gamma_nominal_elev(data):
             for i in plot_gamma_data['gamma_in']: 
                 
                 #plot_gamma_data['power_array_m'][cj][ci] = data['P_w']*data['A_proj']*(data['F_out']*(np.cos(data['a_elev_out'])-j)**2-(data['F_in']*(i**2+2*np.cos(data['a_elev_in'])*i+1)))*((j*i)/(j+i))
-                plot_gamma_data['power_array_e'][cj][ci] = data['P_w']*data['A_proj']*(data['eff_out']*data['F_out']*(np.cos(data['a_elev_out'])-j)**2-(data['F_in']*(i**2+2*np.cos(data['a_elev_in'])*i+1))/data['eff_in'])*((j*i)/(j+i))
+                plot_gamma_data['power_array_e'][cj][ci] = data['A_proj']*(data['eff_out']*data['F_out']*(np.cos(data['a_elev_out'])-j)**2-(data['F_in']*(i**2+2*np.cos(data['a_elev_in'])*i+1))/data['eff_in'])*((j*i)/(j+i))
                 ci  += 1
-        
+        #data['P_w']*
             cj +=1
             ci = 0 
 
@@ -212,7 +212,7 @@ def calculate_nominal_powers(data):
 def calculate_updated_projected_area(data):
     
     data['A_proj_u'] = data['P_avg_e_req']/ data['P_w']/((data['eff_out']*data['F_out']*(np.cos(data['a_elev_out'])-data['gamma_out_n'])**2-(data['F_in']*(data['gamma_in_n']**2+2*np.cos(data['a_elev_in'])*data['gamma_in_n']+1))/data['eff_in'])*(( data['gamma_out_n']* data['gamma_in_n'])/( data['gamma_out_n']+ data['gamma_in_n'])))
-    data['A_proj']= data['A_proj_u']
+    #data['A_proj']= data['A_proj_u']
     return data
 
 ### This function calculates the cycle times ###
@@ -245,15 +245,23 @@ def evaluate_tether_force(data):
         TF_an['force'].append(data['T_out_elev_n'])
         TF_an['area'].append(data['A_proj'])
 
-    #plot_TF_an(TF_an)
-    #data['gamma_out_n'] 
-    data['gamma_out_n'] = 0.43#float(input('Enter the chosen gamma reel-out to find the correspinding optimal gamma reel-in: '))
-    data = calculate_opt_gamma_in(data)
-    data = calculate_updated_projected_area(data)
-    data['A_proj'] = data['A_proj_u']
+    plot_TF_an(TF_an)
+    # data['gamma_out_n'] 
+    # data['gamma_out_n'] = 0.43#float(input('Enter the chosen gamma reel-out to find the correspinding optimal gamma reel-in: '))
+    # data = calculate_opt_gamma_in(data)
+    # data = calculate_updated_projected_area(data)
+    #data['A_proj'] = data['A_proj_u']
+    data['A_proj'] =  data['A_proj_init']
     data['gamma_out_n'] = np.cos(data['a_elev_out']) - np.sqrt(data['T_out_target']*2/(data['rho']*data['v_w_n']**2*data['A_proj']*data['F_out']))
     data = calculate_opt_gamma_in(data)
     data = calculate_updated_projected_area(data)
+    if data['A_proj']< data['A_proj_u']:
+        print('ok')
+
+    else:
+        print('not ok')
+    print(data['A_proj']) 
+    print(data['A_proj_u'])
     data['A_proj'] = data['A_proj_u']
     data = calculate_nominal_tractionF(data)
     data = calculate_nominal_powers(data)
@@ -348,7 +356,7 @@ def run_nominal_analysis(data):
         print('The projected area of the kite should be iterated on!')
     else: 
         print('The area of the kite is optimal for the required power output.')
-    
+    #data['A_proj'] = data['A_proj_u']
     data = calculate_nominal_tractionF(data)
     data = calculate_nominal_powers(data)
     data = calculate_cycle_param(data)
@@ -415,6 +423,7 @@ def sensitivity_analysis(data):
    
     for w in data['v_w_adj']:
         data['v_w_n'] = float(w)
+        data['P_w'] = 0.5*data['v_w_n'] **3*data['rho'] 
        
         data = calculate_opt_gamma_nominal_elev(data)[0]
         data = calculate_nominal_tractionF(data)
@@ -469,12 +478,19 @@ def sensitivity_analysis(data):
     plt.plot(datasens["v_w_list"],datasens['gamma_out_list_VW'],color = 'r')
     plt.plot(datasens['v_w_list'],datasens['gamma_in_list_VW'],color = 'b')
     plt.show()
+    plt.plot(datasens["v_w_list"],datasens['P_avg_e_list_VW'])
+    plt.show()
     return datasens
 
-
+def sanety_check(data):
+    data = calculate_nominal_tractionF(data)
+    data = calculate_nominal_powers(data)
+    return data
 #data = get_initial_data()
+
 data = sensitivity_analysis(get_initial_data())
-data = run_nominal_analysis(get_initial_data())  
+#data = run_nominal_analysis(get_initial_data()) 
+#print(sanety_check(get_initial_data()))
 
 
 

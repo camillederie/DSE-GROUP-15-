@@ -1,5 +1,6 @@
 from cmath import cos
-from shlex import join
+#from shlex import join
+
 import numpy as np
 import matplotlib.pyplot as plt
 from InputV2 import *
@@ -12,7 +13,7 @@ F_out = 55.72
 A_proj = 15.19
 #v_t_n = 7.5
 P_out_max = 50000
-T_out_n = 10500
+T_out_n = 11100
 
 
 def calculate_three_phase(step):
@@ -20,7 +21,7 @@ def calculate_three_phase(step):
 
     v_w = np.linspace(0,2.5*data['v_w_n'],step)
     gamma_in = np.linspace(0.1, 4, step)
-    gamma_out = np.linspace(0.1,0.5,step)
+    gamma_out = np.linspace(0.1,1,step)
     gamma_in_max_f_c = np.zeros(step)
     gamma_out_max_f_c = np.zeros(step)
     f_c = np.zeros((step,step))
