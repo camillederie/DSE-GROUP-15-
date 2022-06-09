@@ -459,8 +459,8 @@ def sensitivity_analysis(data):
             data = calculate_opt_gamma_in(data)
             data['gamma_out_n'] = np.cos(data['a_elev_out']) - np.sqrt(data['T_out_target']*2/(data['rho']*data['v_w_n']**2*data['A_proj']*data['F_out']))
     
-        data = calculate_updated_projected_area(data)
-        data['A_proj'] = data['A_proj_u']
+        # data = calculate_updated_projected_area(data)
+        # data['A_proj'] = data['A_proj_u']
         data = calculate_nominal_tractionF(data)
         data = calculate_nominal_powers(data)
         data = calculate_cycle_param(data)
@@ -469,7 +469,7 @@ def sensitivity_analysis(data):
         datasens['gamma_out_list_FO'].append(data['gamma_out_n'])
         datasens['gamma_in_list_FO'].append(data['gamma_in_n'])
         datasens['cycle_time_list_FO'].append(data['cycle_time'])
-
+    print(len(datasens['T_out_list_FO']),len(datasens['F_out_list']))
     file = open("Luchsinger\datasens.txt","w") 
     for key, value in datasens.items(): 
         file.write('%s:%s\n' % (key, value))
@@ -479,6 +479,8 @@ def sensitivity_analysis(data):
     plt.plot(datasens['v_w_list'],datasens['gamma_in_list_VW'],color = 'b')
     plt.show()
     plt.plot(datasens["v_w_list"],datasens['P_avg_e_list_VW'])
+    plt.show()
+    plt.plot(datasens['F_out_list'],datasens['T_out_list_FO'])
     plt.show()
     return datasens
 
