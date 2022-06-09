@@ -9,7 +9,7 @@ from Anchoring_design import anchoring_info
 from LaunchingEquipment import launching_equipment_info
 
 
-'Aero and Power inputs'
+'''Aero and Power inputs'''
 A_proj = 15.19
 A_proj = np.linspace(10,25,20)
 Points = 1000000
@@ -19,13 +19,13 @@ AoA_range_out = np.arange(8, 15.5, 0.5)
 AoA_range_in = np.arange(-1, 3.5, 0.5)
 TAS = 32.5
 
-'Structures Input'
+'''Structures Input'''
 len_drum = 1.10
 extra_len = 75
 saf_fac = 2
 kite_mass_margin = 1.05
 
-'Inputs for Anchoring'
+'''Inputs for Anchoring'''
 Riv_w = 3692
 Safety_f = 1.2
 ref_kin_fric_coeff = 0.35
@@ -34,7 +34,7 @@ min_kite_angle = 25
 max_kite_angle = 35
 road_angle = 2
 
-'Inputs Launching System'
+'''Inputs Launching System'''
 vw_ground = 10.  # m/s
 
 # data = {}
@@ -67,9 +67,7 @@ def sens_iteration_aero_power(run_aero, A_proj, TAS):
     AoA_range_out = np.arange(8, 15.5, 0.5)
     AoA_range_in = np.arange(-1, 3.5, 0.5)
 
-    ## AERO ##
-
-    print('A_proj=', A_proj)
+    # print('A_proj=', A_proj)
     if run_aero == True:
         print('Aero started')
         CL_average_out, CD_average_out, CL3_CD2_average_out, CD_average_in, A_proj, Strut_area_av, flat_area, flat_area_span, chords = main_aero_function(
@@ -103,75 +101,86 @@ def sens_iteration_aero_power(run_aero, A_proj, TAS):
     # datasens['chords'] = chords
 
     # Write to file #
-    sensdata_save = 0
-    if sensdata_save == True:
+    datasens_save = 0
+    if datasens_save == True:
         file = open("data_sens.txt", "w")
-        for key, value in data.items():
+        for key, value in datasens.items():
             file.write('%s:%s,\n' % (key, value))
+            print(key, value)
         file.close()
         print('The extended results of the analysis can be found in the data file added to the directory.')
 
     return datasens
 
-datasens = sens_iteration_aero_power(False, A_proj, TAS)
-
-# datasens['F_out_list'] = data['F_out_list']
-# datasens['A_proj_list'] = data['A_proj_list']
-# datasens['v_w_list'] = data['v_w_adj']
-#
-# datasens['T_out_list_VW'] = []
-# datasens['P_avg_e_list_VW'] = []
-# datasens['gamma_out_list_VW'] = []
-# datasens['gamma_in_list_VW'] = []
-# datasens['cycle_time_list_VW'] = []
-#
-# datasens['T_out_list_A'] = []
-# datasens['P_avg_e_list_A'] = []
-#
-# datasens['T_out_list_FO'] = []
-# datasens['P_avg_e_list_FO'] = []
-# datasens['gamma_out_list_FO'] = []
-# datasens['gamma_in_list_FO'] = []
-# datasens['cycle_time_list_FO'] = []
+# datasens = sens_iteration_aero_power(False, A_proj, TAS)
+datasens = import_data("data_sens.txt")
 
 def sensitivity_plots(datasens):
+    # datasens['F_out_list'] = data['F_out_list']
+    # datasens['A_proj_list'] = data['A_proj_list']
+    # datasens['v_w_list'] = data['v_w_adj']
 
-    colors = datasens['v_w_list']
+    'FOR WINDSPEED'
+    # datasens['T_out_list_VW'] = []
+    # datasens['P_avg_e_list_VW'] = []
+    # datasens['gamma_out_list_VW'] = []
+    # datasens['gamma_in_list_VW'] = []
+    # datasens['cycle_time_list_VW'] = []
+    plot_wind = False
+    if plot_wind == True:
+        colors = datasens['v_w_list']
+        fig, ax1 = plt.subplots()
+        ax1.set_xlabel('Cycle Time (s)')
+        ax1.set_ylabel('Nominal Reel-Out Tension Force (N)')
+        plt.scatter(datasens['cycle_time_list_VW'], datasens['T_out_list_VW'],
+                    c = colors, sizes = 30*datasens['v_w_list'],
+                    alpha = 0.7, cmap = 'viridis')
+        clb = plt.colorbar()  # show color scaleax1.plot(datasens['F_out_list'], datasens['gamma_out_list_FO'], color='g')
+        plt.tight_layout()
+        clb.set_label('Nominal Wind Speed (m/s)', fontsize = 8)
+        plt.show()
+
+        colors = datasens['v_w_list']
+        fig, ax1 = plt.subplots()
+        ax1.set_xlabel('Gamma out (-)')
+        ax1.set_ylabel('Average Electrical Power (W)')
+        plt.scatter(datasens['gamma_out_list_VW'], datasens['P_avg_e_list_VW'],
+                    c = colors, sizes = 30*datasens['v_w_list'],
+                    alpha = 0.7, cmap = 'viridis')
+        clb = plt.colorbar()  # show color scaleax1.plot(datasens['F_out_list'], datasens['gamma_out_list_FO'], color='g')
+        plt.tight_layout()
+        clb.set_label('Nominal Wind Speed (m/s)', fontsize = 8)
+        plt.show()
+
+        # colors = datasens['F_out_list']
+        # fig, ax1 = plt.subplots()
+        # ax1.set_xlabel('Gamma out (-)')
+        # ax1.set_ylabel('Gamma in (-)')
+        # plt.scatter(datasens['gamma_out_list_FO'], datasens['gamma_in_list_FO'],
+        #             c=colors, sizes=datasens['F_out_list'],
+        #             alpha=0.3, cmap='viridis')
+        # clb = plt.colorbar()  # show color scaleax1.plot(datasens['F_out_list'], datasens['gamma_out_list_FO'], color='g')
+        # plt.tight_layout()
+        # clb.set_label('F_out', fontsize=8)
+        # plt.show()
+
+    'CL^3/CD^2'
+    # datasens['T_out_list_FO'] = []
+    # datasens['P_avg_e_list_FO'] = []
+    # datasens['gamma_out_list_FO'] = []
+    # datasens['gamma_in_list_FO'] = []
+    # datasens['cycle_time_list_FO'] = []
+    colors = datasens['F_out_list']
     fig, ax1 = plt.subplots()
     ax1.set_xlabel('Cycle Time (s)')
     ax1.set_ylabel('Nominal Reel-Out Tension Force (N)')
-    plt.scatter(datasens['cycle_time_list_VW'], datasens['T_out_list_VW'],
-                c = colors, sizes = 30*datasens['v_w_list'],
-                alpha = 0.7, cmap = 'viridis')
+    plt.scatter(datasens['cycle_time_list_FO'], datasens['T_out_list_FO'],
+                c=colors, sizes=30 * datasens['F_out_list'],
+                alpha=0.7, cmap='viridis')
     clb = plt.colorbar()  # show color scaleax1.plot(datasens['F_out_list'], datasens['gamma_out_list_FO'], color='g')
     plt.tight_layout()
-    clb.set_label('Nominal Wind Speed (m/s)', fontsize = 8)
+    clb.set_label('$CL^3/CD^2$ (m)', fontsize=8)
     plt.show()
-
-    colors = datasens['v_w_list']
-    fig, ax1 = plt.subplots()
-    ax1.set_xlabel('Gamma out (-)')
-    ax1.set_ylabel('Average Electrical Power (W)')
-    plt.scatter(datasens['gamma_out_list_VW'], datasens['P_avg_e_list_VW'],
-                c = colors, sizes = 30*datasens['v_w_list'],
-                alpha = 0.7, cmap = 'viridis')
-    clb = plt.colorbar()  # show color scaleax1.plot(datasens['F_out_list'], datasens['gamma_out_list_FO'], color='g')
-    plt.tight_layout()
-    clb.set_label('Nominal Wind Speed (m/s)', fontsize = 8)
-    plt.show()
-
-    # colors = datasens['F_out_list']
-    # fig, ax1 = plt.subplots()
-    # ax1.set_xlabel('Gamma out (-)')
-    # ax1.set_ylabel('Gamma in (-)')
-    # plt.scatter(datasens['gamma_out_list_FO'], datasens['gamma_in_list_FO'],
-    #             c=colors, sizes=datasens['F_out_list'],
-    #             alpha=0.3, cmap='viridis')
-    # clb = plt.colorbar()  # show color scaleax1.plot(datasens['F_out_list'], datasens['gamma_out_list_FO'], color='g')
-    # plt.tight_layout()
-    # clb.set_label('F_out', fontsize=8)
-    # plt.show()
-
 
     fig, ax1 = plt.subplots()
     ax1.set_xlabel('CL^3/CD^2 out (-)')
@@ -186,7 +195,6 @@ def sensitivity_plots(datasens):
     plt.tight_layout()
     plt.show()
 
-
     fig, ax1 = plt.subplots()
     ax1.plot(datasens['F_out_list'],datasens['P_avg_e_list_FO'], color = 'g')
     ax1.set_ylabel('Average Electric Power', color = 'g')
@@ -197,6 +205,10 @@ def sensitivity_plots(datasens):
     plt.grid()
     plt.tight_layout()
     plt.show()
+
+    'AREA'
+    # datasens['T_out_list_A'] = []
+    # datasens['P_avg_e_list_A'] = []
 
     fig, ax1 = plt.subplots()
     ax1.plot(datasens['A_proj_list'],datasens['P_avg_e_list_A'], color = 'g')
@@ -209,20 +221,9 @@ def sensitivity_plots(datasens):
     plt.tight_layout()
     plt.show()
 
-    fig, ax1 = plt.subplots()
-    ax1.plot(datasens['v_w_list'],datasens['P_avg_e_list_VW'], color = 'g')
-    ax1.set_ylabel('Average Electric Power', color = 'g')
-    ax2 = ax1.twinx()
-    ax2.plot(datasens['v_w_list'],datasens['T_out_list_VW'], color = 'b')
-    ax1.set_xlabel('Wind Speed at Operational Altitude (m/s)')
-    ax2.set_ylabel('Tether Force (N)', color = 'b')
-    plt.grid()
-    plt.tight_layout()
-    plt.show()
-
 sensitivity_plots(datasens)
 
-datasens = import_data("data_sens.txt")
+
 data = import_data("data_optim.txt")
 
 # T_F_out = data['T_out_elev_n']

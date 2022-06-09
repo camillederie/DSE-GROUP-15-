@@ -482,6 +482,22 @@ def sensitivity_analysis(data):
     # plt.show()
     plt.plot(datasens['F_out_list'],datasens['T_out_list_FO'])
     # plt.show()
+
+    datasens['T_out_list_VW'] =    np.array( datasens['T_out_list_VW'] )
+    datasens['P_avg_e_list_VW'] =   np.array( datasens['P_avg_e_list_VW'] )
+    datasens['gamma_out_list_VW'] = np.array( datasens['gamma_out_list_VW'] )
+    datasens['gamma_in_list_VW'] =  np.array( datasens['gamma_in_list_VW'] )
+    datasens['cycle_time_list_VW'] =  np.array( datasens['cycle_time_list_VW'] )
+
+    datasens['T_out_list_A'] =  np.array( datasens['T_out_list_A'] )
+    datasens['P_avg_e_list_A'] =  np.array( datasens['P_avg_e_list_A'] )
+
+    datasens['T_out_list_FO'] =  np.array( datasens['T_out_list_FO'] )
+    datasens['P_avg_e_list_FO'] =  np.array( datasens['P_avg_e_list_FO'] )
+    datasens['gamma_out_list_FO'] =  np.array( datasens['gamma_out_list_FO'] )
+    datasens['gamma_in_list_FO'] =  np.array( datasens['gamma_in_list_FO'] )
+    datasens['cycle_time_list_FO'] =  np.array( datasens['cycle_time_list_FO'] )
+
     return datasens
 
 def sanety_check(data):
