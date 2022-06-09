@@ -29,6 +29,7 @@ def launching_equipment_info(vw_ground, friction_coefficient, S, c, kite_mass):
 
     print(f'The downforce that needs to be provided by the launching equipment is {F_clamp} N \n'
           f'This means a weight of at least {F_clamp/g} kg of the launching equipment.')
+    return F_clamp
 
 if __name__ == "__main__":
     launching_equipment_info(vw_ground, friction_coefficient, S, c, kite_mass)
