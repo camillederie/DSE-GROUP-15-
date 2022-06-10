@@ -410,15 +410,21 @@ def sensitivity_analysis(data):
     datasens['gamma_out_list_VW'] =[]
     datasens['gamma_in_list_VW'] = []
     datasens['cycle_time_list_VW'] = []
+    datasens['supercap_list_VW'] = []
+    datasens['Power_reel_out_list_VW'] = []
 
     datasens['T_out_list_A'] = []
     datasens['P_avg_e_list_A'] = []
+    datasens['supercap_list_A'] = []
+    datasens['Power_reel_out_list_A'] = []
 
     datasens['T_out_list_FO'] =[]
     datasens['P_avg_e_list_FO'] = []
     datasens['gamma_out_list_FO'] =[]
     datasens['gamma_in_list_FO'] = []
     datasens['cycle_time_list_FO'] = []
+    datasens['supercap_list_FO'] = []
+    datasens['Power_reel_out_list_FO'] = []
 
    
     for w in data['v_w_adj']:
@@ -433,11 +439,15 @@ def sensitivity_analysis(data):
             data = calculate_nominal_tractionF(data)
         data = calculate_nominal_powers(data)
         data = calculate_cycle_param(data)
+        data = size_supercap(data)
+
         datasens['T_out_list_VW'].append(data['T_out_elev_n'])
         datasens['P_avg_e_list_VW'].append(data['P_avg_elec_elev'])
         datasens['gamma_out_list_VW'].append(data['gamma_out_n'])
         datasens['gamma_in_list_VW'].append(data['gamma_in_n'])
         datasens['cycle_time_list_VW'].append(data['cycle_time'])
+        datasens['supercap_list_VW'].append(data['SC_cap'])
+        datasens['Power_reel_out_list_VW'].append(data['P_out_e_elev'])
 
     data = get_initial_data()
     
@@ -445,8 +455,12 @@ def sensitivity_analysis(data):
         data['A_proj'] = a
         data = calculate_nominal_tractionF(data)
         data = calculate_nominal_powers(data)
+        data = size_supercap(data)
         datasens['T_out_list_A'].append(data['T_out_elev_n'])
         datasens['P_avg_e_list_A'].append(data['P_avg_elec_elev'])
+        datasens['supercap_list_A'].append(data['SC_cap'])
+        datasens['Power_reel_out_list_VW'].append(data['P_out_e_elev'])
+        
 
     data = get_initial_data()
     
@@ -464,11 +478,14 @@ def sensitivity_analysis(data):
         data = calculate_nominal_tractionF(data)
         data = calculate_nominal_powers(data)
         data = calculate_cycle_param(data)
+        data = size_supercap(data)
         datasens['T_out_list_FO'].append(data['T_out_elev_n'])
         datasens['P_avg_e_list_FO'].append(data['P_avg_elec_elev'])
         datasens['gamma_out_list_FO'].append(data['gamma_out_n'])
         datasens['gamma_in_list_FO'].append(data['gamma_in_n'])
         datasens['cycle_time_list_FO'].append(data['cycle_time'])
+        datasens['supercap_list_FO'].append(data['SC_cap'])
+        datasens['Power_reel_out_list_VW'].append(data['P_out_e_elev'])
     print(len(datasens['T_out_list_FO']),len(datasens['F_out_list']))
     # file = open("Luchsinger\datasens.txt","w")
     # for key, value in datasens.items():
@@ -488,15 +505,21 @@ def sensitivity_analysis(data):
     datasens['gamma_out_list_VW'] = np.array( datasens['gamma_out_list_VW'] )
     datasens['gamma_in_list_VW'] =  np.array( datasens['gamma_in_list_VW'] )
     datasens['cycle_time_list_VW'] =  np.array( datasens['cycle_time_list_VW'] )
+    datasens['supercap_list_VW'] = np.array(datasens['supercap_list_VW'] )
+    datasens['Power_reel_out_list_VW'] = np.array( datasens['Power_reel_out_list_VW'] )
 
     datasens['T_out_list_A'] =  np.array( datasens['T_out_list_A'] )
     datasens['P_avg_e_list_A'] =  np.array( datasens['P_avg_e_list_A'] )
+    datasens['supercap_list_A'] = np.array(datasens['supercap_list_A'] )
+    datasens['Power_reel_out_list_A'] = np.array( datasens['Power_reel_out_list_A'] )
 
     datasens['T_out_list_FO'] =  np.array( datasens['T_out_list_FO'] )
     datasens['P_avg_e_list_FO'] =  np.array( datasens['P_avg_e_list_FO'] )
     datasens['gamma_out_list_FO'] =  np.array( datasens['gamma_out_list_FO'] )
     datasens['gamma_in_list_FO'] =  np.array( datasens['gamma_in_list_FO'] )
     datasens['cycle_time_list_FO'] =  np.array( datasens['cycle_time_list_FO'] )
+    datasens['supercap_list_FO'] = np.array(datasens['supercap_list_FO'] )
+    datasens['Power_reel_out_list_FO'] = np.array( datasens['Power_reel_out_list_FO'] )
 
     return datasens
 
