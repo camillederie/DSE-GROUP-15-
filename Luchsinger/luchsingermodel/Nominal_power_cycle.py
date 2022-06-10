@@ -160,7 +160,7 @@ def plot_gamma_power(data_plot):
     #plt.colorbar()
     cbar.set_label('Average Output Power')
     
-    plt.show()
+    # plt.show()
 
 ### This function calculates the traction forces for nominal flight conditions ###
 
@@ -281,7 +281,7 @@ def plot_TF_an(TF_an):
     ax1.set_xlabel('Gamma Reel-out', color = 'r')
     ax2.set_xlabel('Projected Area (m2)', color = 'b')
     plt.grid()
-    plt.show()
+    # plt.show()
 
 ### This function calculates the apparent and kite cross wind speed required ###
 
@@ -344,7 +344,7 @@ def run_nominal_analysis(data):
         data = calculate_opt_gamma_nominal(data)[0]
         data_plot = calculate_opt_gamma_nominal(data)[1]
     elif ip == 1:
-        data = calculate_opt_gamma_nominal_elev(data)[0]
+        data = calculate_op
         data_plot = calculate_opt_gamma_nominal_elev(data)[1]
     else: 
         print('Enter a valid number!')
@@ -470,18 +470,34 @@ def sensitivity_analysis(data):
         datasens['gamma_in_list_FO'].append(data['gamma_in_n'])
         datasens['cycle_time_list_FO'].append(data['cycle_time'])
     print(len(datasens['T_out_list_FO']),len(datasens['F_out_list']))
-    file = open("Luchsinger\datasens.txt","w") 
-    for key, value in datasens.items(): 
-        file.write('%s:%s\n' % (key, value))
-    file.close()
-    print('The extended results of the analysis can be found in the data file added to the directory.')
+    # file = open("Luchsinger\datasens.txt","w")
+    # for key, value in datasens.items():
+    #     file.write('%s:%s\n' % (key, value))
+    # file.close()
+    # print('The extended results of the analysis can be found in the data file added to the directory.')
     plt.plot(datasens["v_w_list"],datasens['gamma_out_list_VW'],color = 'r')
     plt.plot(datasens['v_w_list'],datasens['gamma_in_list_VW'],color = 'b')
-    plt.show()
+    # plt.show()
     plt.plot(datasens["v_w_list"],datasens['P_avg_e_list_VW'])
-    plt.show()
+    # plt.show()
     plt.plot(datasens['F_out_list'],datasens['T_out_list_FO'])
-    plt.show()
+    # plt.show()
+
+    datasens['T_out_list_VW'] =    np.array( datasens['T_out_list_VW'] )
+    datasens['P_avg_e_list_VW'] =   np.array( datasens['P_avg_e_list_VW'] )
+    datasens['gamma_out_list_VW'] = np.array( datasens['gamma_out_list_VW'] )
+    datasens['gamma_in_list_VW'] =  np.array( datasens['gamma_in_list_VW'] )
+    datasens['cycle_time_list_VW'] =  np.array( datasens['cycle_time_list_VW'] )
+
+    datasens['T_out_list_A'] =  np.array( datasens['T_out_list_A'] )
+    datasens['P_avg_e_list_A'] =  np.array( datasens['P_avg_e_list_A'] )
+
+    datasens['T_out_list_FO'] =  np.array( datasens['T_out_list_FO'] )
+    datasens['P_avg_e_list_FO'] =  np.array( datasens['P_avg_e_list_FO'] )
+    datasens['gamma_out_list_FO'] =  np.array( datasens['gamma_out_list_FO'] )
+    datasens['gamma_in_list_FO'] =  np.array( datasens['gamma_in_list_FO'] )
+    datasens['cycle_time_list_FO'] =  np.array( datasens['cycle_time_list_FO'] )
+
     return datasens
 
 def sanety_check(data):

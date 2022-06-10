@@ -171,4 +171,4 @@ road_angle = 2
 req_fric_coeff, sliding_d_mm = anchoring_info(Kite_f, Riv_w, road_angle, min_kite_angle, max_kite_angle, ref_kin_fric_coeff, force_duration)
 vw_ground = 10. #m/s
 chord = max(data['chords']) #m
-launching_equipment_info(vw_ground, req_fric_coeff, data['flat_area'], chord, Kite_mass_ALUULA)
+F_clamp = launching_equipment_info(vw_ground, req_fric_coeff, data['flat_area'], chord, Kite_mass_ALUULA)
