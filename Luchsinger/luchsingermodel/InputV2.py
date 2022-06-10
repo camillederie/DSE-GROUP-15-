@@ -2,14 +2,14 @@ import numpy as np
 
 def get_initial_data():
     data = {}
-    data['v_w_adj'] = np.linspace(4, 20, 30)
+    data['v_w_adj'] = np.linspace(4, 20, 40)
     data['A_proj_list'] = np.linspace(7, 25, 25)
     data['F_out_list'] = np.linspace(10, 150, 20)  # np.linspace(10, 100, 90)
 
     data['v_w_n'] = 10 #np.linspace(5,15,20) #10 #10.44#np.linspace(5,20,50)
     data['CL_out'] = 1.0720464426912995 #np.linspace(0.6,1.5,50)
     data['A_proj'] = 15.284289430824494 #12.302 #10.04#15.681 #9.723#9.34#21.54#24.19 #8.18 #24.19 #20.79 #21.57 #np.linspace(15,35,50) #19.8 #
-    data['T_out_target'] = 10405
+    data['T_out_target'] = 10500
     data['T_out_max'] = 10500
     data['rho'] = 1.18
     data['lc'] = 250
@@ -33,6 +33,7 @@ def get_initial_data():
     data['rpm_n'] = 1525
     data['rpm_max'] = 3000
     data['rpm_motor'] = 750 
+    data['Generator_lim'] = 50000 
     
 
     ## Intermediate calculations ##

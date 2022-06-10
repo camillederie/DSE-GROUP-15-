@@ -1,6 +1,6 @@
 
-from Luchsinger.luchsingermodel.InputV2 import *
-#from InputV2 import *
+#from Luchsinger.luchsingermodel.InputV2 import *
+from InputV2 import *
 import numpy as np 
 from matplotlib import cm
 from matplotlib.colors import ListedColormap,LinearSegmentedColormap
@@ -282,7 +282,75 @@ def plot_TF_an(TF_an):
     ax2.set_xlabel('Projected Area (m2)', color = 'b')
     plt.grid()
     # plt.show()
+def three_phase_an(data):
+    datasens= {}
+    datasens['F_out_list'] = data['F_out_list']
+    datasens['A_proj_list'] = data['A_proj_list']
+    datasens['v_w_list'] = data['v_w_adj']
 
+    datasens['T_out_list_VW'] =[]
+    datasens['P_avg_e_list_VW'] = []
+    datasens['gamma_out_list_VW'] =[]
+    datasens['gamma_in_list_VW'] = []
+    datasens['cycle_time_list_VW'] = []
+    datasens['supercap_list_VW'] = []
+    datasens['elevation_angle_VW'] = []
+    datasens['Power_reel_out_list_VW'] = []
+    data['a_elev_init'] = data['a_elev_out']
+    for w in data['v_w_adj']:
+
+        data['v_w_n'] = float(w)
+        data['P_w'] = 0.5*data['v_w_n'] **3*data['rho'] 
+        data['a_elev_out'] = data['a_elev_init']
+        data = calculate_opt_gamma_nominal_elev(data)[0]
+        data = calculate_nominal_tractionF(data)
+        data = calculate_nominal_powers(data)
+        if data['T_out_elev_n'] > data['T_out_max']:
+            
+            data['gamma_out_n'] = np.cos(data['a_elev_out']) - np.sqrt(data['T_out_target']*2/(data['rho']*data['v_w_n']**2*data['A_proj']*data['F_out']))
+            data = calculate_opt_gamma_in(data)
+            data = calculate_nominal_tractionF(data)
+            data = calculate_nominal_powers(data)
+            if data['P_out_e_elev']>data['Generator_lim']:
+                
+                print('Generator limit reached.')
+                data['rpm_out'] = data['v_w_n']*data['gamma_out_n']/(data['drum_circum'])*60/0.105
+                print(data['rpm_out'])
+                data['gamma_out_n'] = 3000*(data['drum_circum'])/60/data['v_w_n']*0.105
+                data['a_elev_out_new'] = np.arccos( data['gamma_out_n'] + np.sqrt(data['T_out_target']*2/(data['rho']*data['v_w_n']**2*data['A_proj']*data['F_out'])))
+                print(data['a_elev_out_new']*180/np.pi)
+                
+                data['a_elev_out'] = data['a_elev_out_new']
+                
+                data = calculate_opt_gamma_in(data)
+                data = calculate_nominal_tractionF(data)
+                data = calculate_nominal_powers(data)
+                if data['a_elev_out']<data['a_elev_init']:
+                    data['a_elev_out'] = data['a_elev_init']
+        
+        data = calculate_cycle_param(data)
+        data['a_elev_out'] =  data['a_elev_out']*180/np.pi
+        datasens['T_out_list_VW'].append(data['T_out_elev_n'])
+        datasens['P_avg_e_list_VW'].append(data['P_avg_elec_elev'])
+        datasens['gamma_out_list_VW'].append(data['gamma_out_n'])
+        datasens['gamma_in_list_VW'].append(data['gamma_in_n'])
+        datasens['cycle_time_list_VW'].append(data['cycle_time'])
+        
+        datasens['elevation_angle_VW'].append(data['a_elev_out'])
+        datasens['Power_reel_out_list_VW'].append(data['P_out_e_elev'])
+                
+    plt.plot(datasens["v_w_list"],datasens['P_avg_e_list_VW'])
+    plt.grid()
+    plt.show()
+    plt.plot(datasens["v_w_list"],datasens['T_out_list_VW'])
+    plt.grid()
+    plt.show()
+    plt.plot(datasens["v_w_list"],datasens['elevation_angle_VW'])
+    plt.grid()
+    plt.show()
+        
+    #data = size_supercap(data)
+    return data
 ### This function calculates the apparent and kite cross wind speed required ###
 
 def calculate_apparent_speed(data):
@@ -306,7 +374,7 @@ def size_supercap(data):
 def size_generator(data):
     data['rpm_n_out'] = data['v_w_n']*data['gamma_out_n']/(data['drum_circum'])*60
     data['rpm_n_in'] = data['v_w_n']*data['gamma_in_n']/(data['drum_circum'])*60
-   # print(data['rpm_n_out'],data['rpm_n_in'])
+    # print(data['rpm_n_out'],data['rpm_n_in'])
     data['GR_min'] = data['rpm_n_out']/data['rpm_min']
     data['GR_n'] = data['rpm_n_out']/data['rpm_n']
     data['GR_max'] = data['rpm_n_out']/data['rpm_max']
@@ -332,7 +400,7 @@ def size_generator(data):
     plt.legend()
     plt.grid()
     
-    #plt.show()
+    plt.show()
 
     return data
     
@@ -344,7 +412,7 @@ def run_nominal_analysis(data):
         data = calculate_opt_gamma_nominal(data)[0]
         data_plot = calculate_opt_gamma_nominal(data)[1]
     elif ip == 1:
-        data = calculate_op
+        data = calculate_opt_gamma_nominal_elev(data)[0]
         data_plot = calculate_opt_gamma_nominal_elev(data)[1]
     else: 
         print('Enter a valid number!')
@@ -532,6 +600,7 @@ def sanety_check(data):
 #data = sensitivity_analysis(get_initial_data())
 #data = run_nominal_analysis(get_initial_data()) 
 #print(sanety_check(get_initial_data()))
+data = three_phase_an(get_initial_data())
 
 
 
