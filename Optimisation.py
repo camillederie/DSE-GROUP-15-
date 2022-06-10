@@ -2,13 +2,13 @@
 import numpy as np
 
 from Drum_and_tether_design import structures_calculation
-from Luchsinger.luchsingermodel.Nominal_power_cycle import sensitivity_analysis
+from Luchsinger.luchsingermodel.Nominal_power_cycle import run_nominal_analysis, sensitivity_analysis
 from Luchsinger.luchsingermodel.InputV2 import get_initial_data
 from Aero.aero_main_function import main_aero_function
 from Anchoring_design import anchoring_info
 from LaunchingEquipment import launching_equipment_info
 
-A_proj = 15.19
+A_proj = 16.65
 Points = 1000000
 Kite_segments = 12
 N_split = 5
@@ -21,7 +21,7 @@ def iteration_aero_power(area_diff, A_proj, TAS):
     Points = 1000000
     Kite_segments = 12
     N_split = 5
-    AoA_range_out = np.arange(8, 15.5, 0.5)
+    AoA_range_out = np.arange(8, 15.5, 0.5)  
     AoA_range_in = np.arange(-1, 3.5, 0.5)
 
     A_proj_last = 0
@@ -48,8 +48,8 @@ def iteration_aero_power(area_diff, A_proj, TAS):
         data['CD_out'] = CD_average_out
         # data['CL_in'] = CL_average_in
         data['CD_in'] = CD_average_in
-        data['']
-        data =  run_sensitivity_analysis(data)
+        #data['']
+        data =  run_nominal_analysis(data)
         data['Strut_area_av'] = Strut_area_av
         data['flat_area'] = flat_area
         data['flat_area_span'] = flat_area_span
@@ -69,7 +69,7 @@ def iteration_aero_power(area_diff, A_proj, TAS):
 
     return data
 
-# data = iteration_aero_power(area_diff, A_proj, TAS)
+data = iteration_aero_power(area_diff, A_proj, TAS)
 
 # Open Data
 def import_data(file_name):

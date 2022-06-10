@@ -1,6 +1,6 @@
 
-#from Luchsinger.luchsingermodel.InputV2 import *
-from InputV2 import *
+from Luchsinger.luchsingermodel.InputV2 import *
+#from InputV2 import *
 import numpy as np 
 from matplotlib import cm
 from matplotlib.colors import ListedColormap,LinearSegmentedColormap
@@ -245,7 +245,7 @@ def evaluate_tether_force(data):
         TF_an['force'].append(data['T_out_elev_n'])
         TF_an['area'].append(data['A_proj'])
 
-    plot_TF_an(TF_an)
+    #plot_TF_an(TF_an)
     # data['gamma_out_n'] 
     # data['gamma_out_n'] = 0.43#float(input('Enter the chosen gamma reel-out to find the correspinding optimal gamma reel-in: '))
     # data = calculate_opt_gamma_in(data)
@@ -490,7 +490,7 @@ def sanety_check(data):
     return data
 #data = get_initial_data()
 
-data = sensitivity_analysis(get_initial_data())
+#data = sensitivity_analysis(get_initial_data())
 #data = run_nominal_analysis(get_initial_data()) 
 #print(sanety_check(get_initial_data()))
 
