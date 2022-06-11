@@ -157,10 +157,9 @@ def plot_gamma_power(data_plot):
     cbar = plt.colorbar()
     plt.xlabel(r'$\gamma_{out}$')
     plt.ylabel(r'$\gamma_{in}$')
-    #plt.colorbar()
+    plt.colorbar()
     cbar.set_label('Average Output Power')
-    
-    # plt.show()
+    plt.show()
 
 ### This function calculates the traction forces for nominal flight conditions ###
 
@@ -245,7 +244,7 @@ def evaluate_tether_force(data):
         TF_an['force'].append(data['T_out_elev_n'])
         TF_an['area'].append(data['A_proj'])
 
-    #plot_TF_an(TF_an)
+    plot_TF_an(TF_an)
     # data['gamma_out_n'] 
     # data['gamma_out_n'] = 0.43#float(input('Enter the chosen gamma reel-out to find the correspinding optimal gamma reel-in: '))
     # data = calculate_opt_gamma_in(data)
@@ -281,7 +280,7 @@ def plot_TF_an(TF_an):
     ax1.set_xlabel('Gamma Reel-out', color = 'r')
     ax2.set_xlabel('Projected Area (m2)', color = 'b')
     plt.grid()
-    # plt.show()
+    plt.show()
 def three_phase_an(data):
     datasens= {}
     datasens['F_out_list'] = data['F_out_list']
@@ -313,12 +312,12 @@ def three_phase_an(data):
             data = calculate_nominal_powers(data)
             if data['P_out_e_elev']>data['Generator_lim']:
                 
-                print('Generator limit reached.')
+                #print('Generator limit reached.')
                 data['rpm_out'] = data['v_w_n']*data['gamma_out_n']/(data['drum_circum'])*60/0.105
-                print(data['rpm_out'])
-                data['gamma_out_n'] = 3000*(data['drum_circum'])/60/data['v_w_n']*0.105
+                #print(data['rpm_out'])
+                data['gamma_out_n'] = data['rpm_max']*(data['drum_circum'])/60/data['v_w_n']*0.105
                 data['a_elev_out_new'] = np.arccos( data['gamma_out_n'] + np.sqrt(data['T_out_target']*2/(data['rho']*data['v_w_n']**2*data['A_proj']*data['F_out'])))
-                print(data['a_elev_out_new']*180/np.pi)
+                #print(data['a_elev_out_new']*180/np.pi)
                 
                 data['a_elev_out'] = data['a_elev_out_new']
                 
@@ -340,12 +339,18 @@ def three_phase_an(data):
         datasens['Power_reel_out_list_VW'].append(data['P_out_e_elev'])
                 
     plt.plot(datasens["v_w_list"],datasens['P_avg_e_list_VW'])
+    plt.xlabel('Wind speed (m/s)')
+    plt.ylabel('Electrical average power output (W)')
     plt.grid()
     plt.show()
     plt.plot(datasens["v_w_list"],datasens['T_out_list_VW'])
+    plt.xlabel('Wind speed (m/s)')
+    plt.ylabel('Reel-out tether force (N)')
     plt.grid()
     plt.show()
     plt.plot(datasens["v_w_list"],datasens['elevation_angle_VW'])
+    plt.xlabel('Wind speed (m/s)')
+    plt.ylabel('Required eleavtion angle during reel-out (degrees)')
     plt.grid()
     plt.show()
         
@@ -431,7 +436,7 @@ def run_nominal_analysis(data):
     data = calculate_apparent_speed(data)
     data = size_supercap(data)
     
-    #plot_gamma_power(data_plot)
+    plot_gamma_power(data_plot)
 
 
     # Write to file #
@@ -598,7 +603,7 @@ def sanety_check(data):
 #data = get_initial_data()
 
 #data = sensitivity_analysis(get_initial_data())
-#data = run_nominal_analysis(get_initial_data()) 
+data = run_nominal_analysis(get_initial_data()) 
 #print(sanety_check(get_initial_data()))
 data = three_phase_an(get_initial_data())
 
